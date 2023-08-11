@@ -1,0 +1,86 @@
+.register {
+  margin: 0 auto;
+  padding: 0;
+  max-width: 396px;
+  display: flex;
+  flex-direction: column;
+}
+
+.register__logo {
+  margin: 70px 0 0;
+}
+
+.register__greetings {
+  margin: 0;
+  padding: 40px 0 0;
+  font-size: 24px;
+  font-weight: 500;
+}
+
+.register__form {
+
+}
+
+.register__label {
+  display: block;
+  margin: 20px 0 0;
+  padding: 0 0 10px;
+  color: #8B8B8B;
+  font-size: 10px;
+  font-weight: 400;
+  }
+
+.register__input {
+  margin: 0;
+  padding: 0 15px;
+  width: 366px;
+  height: 46px;
+  color: #FFF;
+  background-color: #2F2F2F;
+  border-radius: 8px;
+  border: none;
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.register__input:focus {
+  font-weight: 500;
+  outline: none;
+}
+
+.register__input-error {
+  color: #EE3465;
+}
+
+.register__button {
+  margin: 69px 0 0;
+  padding: 0;
+  width: 100%;
+  height: 45px;
+  color: #FFF;
+  background-color: #4285F4;
+  border-radius: 3px;
+  border: none;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.register__subline-text {
+  display: block;
+  margin: 0;
+  padding: 10px 0 0;
+  color: #EE3465;
+  font-size: 10px;
+}
+
+.register__txt {
+  margin: 0 auto;
+  padding: 16px 0 0;
+  font-size: 14px;
+  font-weight: 400;
+  color: #8B8B8B;
+}
+
+.register__text-link {
+  color: #4285F4;
+}

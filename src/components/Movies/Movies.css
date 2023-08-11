@@ -1,0 +1,47 @@
+@import url(./SearchForm/SearchForm.css);
+@import url(./../MoviesCardList/MoviesCardList.css);
+@import url(./../MoviesCard/MoviesCard.css);
+
+
+.movies {
+  margin: 0 auto;
+  padding: 0 70px;
+  display: flex;
+  flex-direction: column;
+  max-width: 100%;
+}
+
+.movies__more-btn {
+  margin: 20px auto 80px;
+  padding: 0;
+  width: 320px;
+  height: 36px;
+  font-size: 12px;
+  font-weight: 500;
+  background: none;
+  border: 1px solid #424242;
+  border-radius: 5px;
+  color: #FFF;
+  cursor: pointer;
+  transition: opacity .2s ease-out;
+}
+
+.movies__more-btn:hover {
+  opacity: .7;
+}
+
+@media screen and (max-width: 1024px){
+  .movies {
+    padding: 0 30px;
+  }
+}
+
+@media screen and (max-width: 640px){
+  .movies {
+    padding: 0 10px;
+  }
+
+  .movies__more-btn {
+    width: 240px;
+  }
+}

@@ -1,0 +1,151 @@
+.header {
+  margin: 0 auto;
+  padding: 21px 70px;
+  display: grid;
+  grid-template-areas: 'logo nav btn';
+  grid-template-columns: 1fr 1fr 1fr;
+  max-height: 74px;
+  transition: all .1s ease;
+}
+
+.header__logo {
+  margin: 0;
+  padding: 0;
+  width: 38px;
+  cursor: pointer;
+}
+
+.header__auth-btns {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  grid-area: btn;
+  justify-self: end;
+  align-self: center;
+  gap: 30px;
+}
+
+.header__signup-btn {
+  margin: 0;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 9px 0 0;
+  text-decoration: none;
+  cursor: pointer;
+  transition: opacity .2s ease-in-out;
+}
+
+.header__signup-btn:hover {
+  opacity: .7;
+}
+
+.header__signin-btn {
+  background-color: #3DDC84;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  width: 76px;
+  height: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  transition: opacity .2s ease-out;
+}
+
+.header__signin-btn:visited {
+  color: #000;
+}
+
+.header__signin-btn:hover {
+  opacity: .8;
+}
+
+.header__is-logged-in {
+  display: contents;
+  position: relative;
+}
+
+.header__nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  grid-area: nav;
+}
+
+.header__nav-link {
+  text-decoration: none;
+  color: #FFF;
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.header__nav-link_active {
+  font-weight: 500;
+}
+
+.header__account-btn {
+  grid-area: btn;
+  background-color: #313131;
+  align-self: center;
+  justify-self: flex-end;
+  color: #FFF;
+  border: none;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  width: 100px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: opacity .2s ease-out;
+}
+
+.header__account-btn:hover {
+  opacity: .8;
+}
+
+.header__menu-btn {
+  margin: 0;
+  padding: 0;
+  background: none;
+  border: none;
+  width: 44px;
+  height: 44px;
+  display: none;
+  cursor: pointer;
+  justify-self: flex-end;
+}
+
+
+
+@media screen and (max-width: 1024px) {
+  .header {
+    padding: 21px 30px;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .header__nav {
+    display: none;
+  }
+
+  .header__account-btn {
+    display: none;
+  }
+
+  .header__menu-btn {
+    display: block;
+  }
+}
+
+@media screen and (max-width: 640px) {
+  .header {
+    padding: 18px 14px;
+    grid-template-columns: 1fr 1fr;
+  }
+}

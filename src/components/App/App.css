@@ -1,0 +1,21 @@
+@import url(../../vendor/normalize.css);
+@import url(../../vendor/fonts.css);
+
+@import url(../../utils/root.css);
+
+@import url(../Header/Header.css);
+
+@import url(../Navigation/Navigation.css);
+
+@import url(../Main/Main.css);
+
+@import url(../Movies/Movies.css);
+
+@import url(../Profile/Profile.css);
+
+@import url(../Footer/Footer.css);
+
+@import url(../AuthForm/AuthForm.css);
+
+@import url(../NotFound/NotFound.css);
+

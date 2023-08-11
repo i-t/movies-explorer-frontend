@@ -1,0 +1,14 @@
+.section__title {
+  padding: 110px 0 23px;
+  font-size: 22px;
+  font-weight: 400;
+  /* min-height: 50px; */
+  border-bottom: 1px solid #dadada;
+}
+
+@media screen and (max-width: 640px) {
+  .section__title {
+    font-size: 18px;
+    padding-bottom: 28px;
+  }
+}
