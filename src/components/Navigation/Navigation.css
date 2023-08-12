@@ -27,6 +27,11 @@
   margin-right: 30px;
   margin-top: 30px;
   cursor: pointer;
+  transition: opacity .2s ease-out;
+}
+
+.nav__close-btn:hover {
+  opacity: .8;
 }
 
 .nav__items {
@@ -82,19 +87,11 @@
   align-self: flex-end;
 }
 
-/* .nav__overlay_active {
-  position: fixed;
-  display: block;
-  width: 100vh;
-  height: 100vw;
-  background-color: #000;
-  top: 0;
-  right: 0;
-  left: 0;
-  bottom: 0;
-  opacity: .3;
-  z-index: -20;
-} */
+.nav__account-btn:hover {
+  opacity: .8;
+}
+
+
 
 @media screen and (max-width: 640px) {
   .nav {

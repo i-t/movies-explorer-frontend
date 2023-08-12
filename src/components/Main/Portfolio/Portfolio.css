@@ -38,6 +38,7 @@
   display: flex;
   transition: opacity .2s ease-out;
   justify-content: space-between;
+  color: #fff;
 }
 
 .portfolio__link:visited {

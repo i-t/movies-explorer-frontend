@@ -17,6 +17,7 @@ const handleToggleMenu = () => {
 
   return (
     <header className="header">
+      <div className={`overlay ${openMenu ? "overlay_active" : ""}`}></div>
       <Link to="/">
         <img 
           className="header__logo" 
@@ -50,7 +51,7 @@ const handleToggleMenu = () => {
             </Link>
             <Link 
               className='header__nav-link' 
-              to="/"
+              to="/saved-movies"
               >
                 Сохранённые фильмы
             </Link>

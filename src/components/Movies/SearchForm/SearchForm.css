@@ -22,6 +22,16 @@
   color: #8B8B8B;
   font-size: 14px;
   font-weight: 400;
+  transition: all .2s ease-out;
+}
+
+.search__input:hover {
+  background-color: #303030;
+}
+
+.search__input:focus {
+  outline: none;
+  background-color: #333;
 }
 
 .search__btn {
@@ -67,7 +77,11 @@
   border-radius: 20px;
   background-color: #343434;
   -webkit-transition: .2s;
-  transition: .2s;
+  transition: all .2s ease-out;
+}
+
+.search__checkbox-style:hover {
+  opacity: .8;
 }
 
 .search__checkbox-style:after {

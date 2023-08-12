@@ -55,6 +55,7 @@
 
 .student__link {
   grid-area: link;
+  color: #fff;
   margin: 0;
   padding: 0;
   align-self: flex-end;

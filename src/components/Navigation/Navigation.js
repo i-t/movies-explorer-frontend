@@ -41,7 +41,6 @@ function Navigation({ openMenu, handleToggleMenu }) {
         >
           Аккаунт
         </Link>
-      <span className="nav__overlay nav__overlay_active"></span>
     </div>
     
   )

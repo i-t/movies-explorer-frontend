@@ -36,7 +36,12 @@
   color: #4285F4;
   font-size: 14px;
   font-weight: 400;
+  text-decoration: none;
   transition: all .1s ease;
+}
+
+.not-found__back:visited {
+  color: #4285F4;
 }
 
 @media screen and (max-width: 1024px) {

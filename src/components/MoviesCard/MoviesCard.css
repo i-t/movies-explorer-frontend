@@ -51,6 +51,10 @@
   transition: opacity .3s ease-in-out;
 }
 
+.movies-card__image-container:hover .movies-card__button:hover {
+  opacity: .8;
+}
+
 
 .movies-card__saved {
   background: none;

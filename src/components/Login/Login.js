@@ -6,8 +6,10 @@ import logo from '../../images/logo.svg';
 function Login() {
   return (
     <main className="auth-form">
-      <a href="/"
-      ><img className="auth-form__logo" src={logo} alt="Логотип" /></a>
+      <Link 
+        className="auth-form__logo"
+        to="/"
+      ><img src={logo} alt="Логотип" /></Link>
       <h1 className="auth-form__greetings">Рады видеть!</h1>
       <form className="auth-form__form">
         <label 
@@ -19,6 +21,7 @@ function Login() {
           id="email" 
           name="email"
           type="email"
+          placeholder="pochta@yandex.ru"
           required
         ></input>
 
@@ -30,14 +33,16 @@ function Login() {
           id="password" 
           name="password"
           type="password"
+          placeholder="••••••"
           required
         ></input>
         {/* <p className="auth-form__subline"
         >Что-то пошло не так...</p> */}
-        <button 
+        <Link 
           className="auth-form__button" 
-          type="submit"
-        >Войти</button>
+          type="submib"
+          to="/movies"
+        >Войти</Link>
       </form>
       <p className="auth-form__bottom-text">
         Ещё не зарегистрированы? 
@@ -50,7 +55,6 @@ function Login() {
       </p>
     </main>
   )
-  
 }
 
 export default Login;

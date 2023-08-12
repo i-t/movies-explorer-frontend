@@ -1,4 +1,5 @@
-import Header from "../Header/Header.js";
+import { Link } from 'react-router-dom';
+import Header from '../Header/Header.js';
 
 function Profile({ name, isLoggedIn }) {
   return (
@@ -40,7 +41,7 @@ function Profile({ name, isLoggedIn }) {
           </label>
         </form>
         <button className="profile__edit">Редактировать</button>
-        <button className="profile__logout">Выйти из аккаунта</button>
+        <Link className="profile__logout" to="/signin">Выйти из аккаунта</Link>
       </section>
      </div>
   )
