@@ -12,7 +12,7 @@ function SearchForm() {
           maxLength="30"
           required  
         ></input>
-        <button className="search__btn"><img className="search__btn_img" src={searchButton} alt="Кнопка поиска"></img></button>
+        <button className="search__btn"><img className="search__btn-img" src={searchButton} alt="Кнопка поиска"></img></button>
       </form>
       <label className="search__toggle">
         <input 
