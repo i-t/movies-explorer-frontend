@@ -5,7 +5,7 @@ function Footer() {
       <p className="footer__platform">Учебный проект Яндекс.Практикум х BeatFilm.</p>
       <p className="footer__copiright">© {date.getFullYear()}</p>
       <a 
-        className="footer__link portfolio__link-yandex" 
+        className="footer__link footer__link_yandex" 
         target="_blank" 
         rel="noopener noreferrer"
         href="https://practicum.yandex.ru/"

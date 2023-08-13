@@ -44,6 +44,10 @@
   color: #4285F4;
 }
 
+.not-found__back:hover {
+  opacity: .8;
+}
+
 @media screen and (max-width: 1024px) {
   .not-found__back {
     margin-bottom: 222px;

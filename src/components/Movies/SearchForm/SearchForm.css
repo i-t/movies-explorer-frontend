@@ -30,8 +30,13 @@
 }
 
 .search__input:focus {
+  color: #3DDC84;
   outline: none;
   background-color: #333;
+}
+
+.search__input:focus::placeholder {
+  color: #3DDC84;
 }
 
 .search__btn {

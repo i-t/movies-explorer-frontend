@@ -21,6 +21,8 @@ function Register() {
           name="name"
           type="text"
           placeholder="Егор"
+          minLength="2"
+          maxLength="30"
           required
         ></input>
 
@@ -46,15 +48,16 @@ function Register() {
           name="password"
           type="password"
           placeholder="••••••"
+          minLength="2"
+          maxLength="16"
           required
         ></input>
         <p className="auth-form__subline"
         >Что-то пошло не так...</p>
-        <Link  
+        <button  
           className="auth-form__button" 
           type="submit"
-          to="/signin"
-        >Зарегистрироваться</Link>
+        >Зарегистрироваться</button>
       </form>
       <p className="auth-form__bottom-text">
         Уже зарегистрированы? 

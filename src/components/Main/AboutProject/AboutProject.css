@@ -58,7 +58,7 @@
   color: #000;
 }
 
-.project__progress_subtext {
+.project__subtext {
   margin: 0;
   padding: 0;
   font-size: 14px;
@@ -116,7 +116,7 @@
     font-size: 11px;
   }
 
-  .project__progress_subtext {
+  .project__subtext {
     font-size: 11px;
   }
 }

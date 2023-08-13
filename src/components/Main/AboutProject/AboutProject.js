@@ -1,7 +1,7 @@
 function AboutProject() {
   return (
     <section className="project" id="project">
-      <h2 className="section__title">О проекте</h2>
+      <h2 className="section-title">О проекте</h2>
       <div className="project__columns">
         <article className="project__column">
           <h3 className="project__subtitle">Дипломный проект включал 5 этапов</h3>
@@ -15,8 +15,8 @@ function AboutProject() {
       <div className="project__steps">
         <p className="project__step project__step_colored">1 неделя</p>
         <p className="project__step">4 недели</p>
-        <p className="project__progress_subtext">Back-end</p>
-        <p className="project__progress_subtext">Front-end</p>
+        <p className="project__subtext">Back-end</p>
+        <p className="project__subtext">Front-end</p>
       </div>
 
     </section>

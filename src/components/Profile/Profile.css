@@ -39,6 +39,7 @@
   cursor: text;
 }
 
+
 .profile__input {
   margin: 0;
   padding: 0;
@@ -58,6 +59,10 @@
 
 .profile__input::placeholder {
   color: #FFF;
+}
+
+.profile__input:focus::placeholder {
+  color: #3DDC84;
 }
 
 .profile__edit {

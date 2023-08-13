@@ -11,7 +11,10 @@ function Profile({ name, isLoggedIn }) {
         <h1 className="profile__greetings">
           Привет, {name}!
         </h1>
-        <form className="profile__form">
+        <form 
+          className="profile__form" 
+          id="profile__form"
+        >
           <label 
             className="profile__label" 
             for="name"
@@ -22,6 +25,9 @@ function Profile({ name, isLoggedIn }) {
                 id="name" 
                 name="name" 
                 type="text"
+                minLength="2"
+                maxLength="30"
+                required
                 placeholder="Егор"
             ></input>
           </label>
@@ -36,11 +42,16 @@ function Profile({ name, isLoggedIn }) {
               id="email" 
               name="email" 
               type="email"
+              required
               placeholder="pochta@yandex.ru"
             ></input>
           </label>
         </form>
-        <button className="profile__edit">Редактировать</button>
+        <button 
+          className="profile__edit"
+          form="profile__form">
+            Редактировать
+        </button>
         <Link className="profile__logout" to="/signin">Выйти из аккаунта</Link>
       </section>
      </div>

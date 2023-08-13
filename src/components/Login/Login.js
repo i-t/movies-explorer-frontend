@@ -11,7 +11,7 @@ function Login() {
         to="/"
       ><img src={logo} alt="Логотип" /></Link>
       <h1 className="auth-form__greetings">Рады видеть!</h1>
-      <form className="auth-form__form">
+      <form className="auth-form__form" id="auth-form__form">
         <label 
           className="auth-form__label" 
           for="email"
@@ -33,22 +33,24 @@ function Login() {
           id="password" 
           name="password"
           type="password"
+          minLength="2"
+          maxLength="16"
           placeholder="••••••"
           required
         ></input>
         {/* <p className="auth-form__subline"
         >Что-то пошло не так...</p> */}
-        <Link 
+        <button 
           className="auth-form__button" 
+          form="auth-form__form"
           type="submib"
-          to="/movies"
-        >Войти</Link>
+        >Войти</button>
       </form>
       <p className="auth-form__bottom-text">
         Ещё не зарегистрированы? 
         <Link 
           className='auth-form__bottom-text-link' 
-          to='/signup'
+          to="/signup"
         >
           Регистрация
         </Link>
