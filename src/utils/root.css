@@ -1,0 +1,10 @@
+.root {
+  margin: 0 auto;
+  /* padding: 0; */
+  background-color: #202020;
+  color: #fff;
+  font-family: 'Inter', Arial, sans-serif;
+  max-width: 1280px;
+  min-width: 320px;
+  min-height: 100vh;
+}

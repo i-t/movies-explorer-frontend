@@ -1,0 +1,105 @@
+.nav {
+  background-color: #202020;
+  width: 520px;
+  height: 100vh;
+  color: #FFF;
+  z-index: 5;
+  display: grid;
+  grid-template-areas: 'x' 'nav' 'btn';
+  grid-template-rows: 160px 1fr auto;
+  position: fixed;
+  top: 0;
+  right: 0;
+  transform: translateX(+105%);
+  transition: all .3s ease-out;
+}
+
+.nav_active {
+  transform: translateX(0);
+}
+
+.nav__close-btn {
+  grid-area: x;
+  background: none;
+  border: none;
+  align-self: flex-start;
+  justify-self: end;
+  margin-right: 30px;
+  margin-top: 30px;
+  cursor: pointer;
+  transition: opacity .2s ease-out;
+}
+
+.nav__close-btn:hover {
+  opacity: .8;
+}
+
+.nav__items {
+  grid-area: nav;
+}
+
+.nav__list {
+  display: flex;
+  gap: 30px;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  text-align: center;
+}
+
+.nav__link {
+  text-decoration: none;
+  color: #FFF;
+  font-size: 18px;
+  font-weight: 500;
+  transition: opacity .2s ease-out;
+}
+
+.nav__link:visited {
+  color: #FFF;
+}
+
+.nav__link:hover {
+  opacity: .7;
+}
+
+.nav__link_active {
+  border-bottom: 2px solid #FFF;
+}
+
+.nav__account-btn {
+  grid-area: btn;
+  background-color: #313131;
+  color: #FFF;
+  border: none;
+  text-decoration: none;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  margin: 0 auto 90px;
+  width: 100px;
+  height: 32px;
+  display: flex;
+  transition: all .2s ease-out;
+  align-items: center;
+  justify-content: center;
+  align-self: flex-end;
+}
+
+.nav__account-btn:hover {
+  opacity: .8;
+}
+
+
+
+@media screen and (max-width: 640px) {
+  .nav {
+    width: 100vw;
+    grid-template-rows: 144px 1fr auto;
+  }
+
+  .nav__account-btn {
+    margin-bottom: 46px;
+  }
+}
