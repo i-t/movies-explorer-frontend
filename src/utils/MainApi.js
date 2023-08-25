@@ -128,8 +128,8 @@ export function likeMovie(movie) {
 }
 
 
-export function deleteMovie(id) {
-  return fetch(`${MAIN_API_URL}/movies/${id}`, {
+export function deleteMovie(movie) {
+  return fetch(`${MAIN_API_URL}/movies/${movie._id}`, {
     method: "DELETE",
     headers: getHeaders()
   })

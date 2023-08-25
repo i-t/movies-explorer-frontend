@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 
+import { useForm } from '../../hooks/useForm';
+
 import SearchForm from '../Movies/SearchForm/SearchForm';
 import MoviesCardList from '../MoviesCardList/MoviesCardList';
 import RemoveCardIcon from '../../images/saved-movies__delete-icon.svg'
@@ -7,18 +9,14 @@ import Header from '../Header/Header';
 import Footer from '../Footer/Footer';
 import * as MainApi from '../../utils/MainApi.js'
 import {
-  // SCREEN_DESCTOPE,
-  // SCREEN_TABLET,
-  // SCREEN_MOBILE,
   SHORT_MOVIE_DURATION,
   SEARCH_ERROR
 } from "../../utils/constants";
 
-// import { MAIN_API_URL } from '../../utils/constants.js'
 
 function SavedMovies(props) {
-
   const [shortMovieToggle, setShortMovieToggle] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [serverError, setServerError] = useState(false)
 
   const [savedMovies, setSavedMovies] = useState([]);
@@ -32,17 +30,17 @@ function SavedMovies(props) {
 
   useEffect(() => {
     getShortMovies()
-  }, [savedMovies])
+  }, [])
 
 
   function getMoviesFromApi() {
+    setIsLoading(true);
     MainApi.getSavedMovies()
       .then((saved) => {
         setCardsToRender(saved)
-        console.log('забрали сохраненные фильмы')
         sessionStorage.setItem('saved', JSON.stringify(saved))
-        setCardsToRender(saved)
       })
+    setIsLoading(false);
   }
 
   function getShortMovies() {
@@ -51,83 +49,61 @@ function SavedMovies(props) {
       movie.duration <= SHORT_MOVIE_DURATION
         && short.push(movie)
     })
+    sessionStorage.setItem('saved-short', JSON.stringify(short))
     setShortFilms(short);
   }
 
   function handleShortMovieToggle() {
-    console.log(savedMovies);
-    console.log(shortFilms);
-    // (setShortMovieToggle(!shortMovieToggle));
-    // !shortMovieToggle
-    //   ? setCardsToRender(savedMovies)
-    //   : setCardsToRender(shortFilms)
-
     (setShortMovieToggle(!shortMovieToggle));
+
     if (shortMovieToggle) {
       setCardsToRender(savedMovies)
-    } else { setCardsToRender(shortFilms) }
+    } else {
+      setCardsToRender(shortFilms)
+    }
   }
-
-
-  // async function handleRemoveCard(card) {
-  //   try {
-  //     await handleDeleteMovie(card._id)
-  //   } catch (err) {
-  //     console.log("Фильм не найден.", err)
-  //   }
-  // }
-
-  // async function handleDeleteMovie(movieData) {
-  //   try {
-  //     await apiMain.deleteSavedMovie({ id: movieData._id })
-  //     deleteMoviesOnLocalStorage(movieData)
-  //   } catch (error) {
-  //     console.log("Фильм с указанным movieId не найден.", error);
-  //   }
-  // }
-  // const handleDeleteMovie = (movie) => {
-  //   onDelete(movie).then(() => {
-  //     const movieIndex = movies.findIndex(({ id }) => id === movie.id);
-  //     setMovies([...movies.slice(0, movieIndex), movie, ...movies.slice(movieIndex + 1)]);
-  //   });
-  // };
-
-  // const handleDeleteSaveMovie = (movie) => {
-  //   onDelete(movie).then(() => {
-  //     setMovies((prev) => prev.filter((m) => m.movieId !== movie.movieId));
-  //   });
-  // };
 
 
   function handleFindMovies(search) {
     let found = [];
     let short = [];
+    if (search) {
+      cardsToRender.forEach(movie => {
 
-    cardsToRender.forEach(movie => {
-
-      (movie.nameRU.toLowerCase().includes(search)
-        || movie.nameEN.toLowerCase().includes(search))
-        && (found.push(movie)
-          && (movie.duration <= SHORT_MOVIE_DURATION
-            && short.push(movie)));
-    })
-    setFoundMovies(found);
-    setShortFilms(short);
+        (movie.nameRU.toLowerCase().includes(search)
+          || movie.nameEN.toLowerCase().includes(search))
+          && (found.push(movie)
+            && (movie.duration <= SHORT_MOVIE_DURATION
+              && short.push(movie)));
+      })
+      setCardsToRender(found);
+      setShortFilms(short);
+    } else {
+      setCardsToRender(savedMovies)
+    }
+    return
   }
 
 
   useEffect(() => {
     getMoviesFromApi();
 
-    // setSavedMovies(JSON.parse(sessionStorage.getItem('saved')));
-    // setShortFilms(JSON.parse(sessionStorage.getItem('saved-short')));
+    setSavedMovies(JSON.parse(sessionStorage.getItem('saved')));
+    setShortFilms(JSON.parse(sessionStorage.getItem('saved-short')));
     props.setIsSearchInSaved(true);
   }, [])
 
 
   useEffect(() => {
-    setCardsToRender(savedMovies)
+    setIsLoading(true);
+    getShortMovies();
+    setCardsToRender(savedMovies);
+    setIsLoading(false);
   }, [savedMovies])
+
+  useEffect(() => {
+    setCardsToRender(savedMovies)
+  }, [props.savedMovies])
 
 
 
@@ -143,6 +119,7 @@ function SavedMovies(props) {
           handleShortMovieToggle={handleShortMovieToggle}
           isSearchInSaved={props.isSearchInSaved}
           handleFindMovies={handleFindMovies}
+          isRequired={false}
         />
         {cardsToRender
           ? <MoviesCardList
@@ -150,11 +127,9 @@ function SavedMovies(props) {
             icon={RemoveCardIcon}
             movieCards={cardsToRender}
             savedMovies={props.savedMovies}
-            setSavedMovies={props.setSavedMovies}
             isSearchInSaved={props.isSearchInSaved}
             handleLikeMovie={props.handleLikeMovie}
             handleDeleteMovie={props.handleDeleteMovie}
-          // handleRemoveCard={handleRemoveCard}
           />
           :
           <p className="no-result">

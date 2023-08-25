@@ -6,6 +6,7 @@ import { INPUT_ERROR } from '../../../utils/constants.js';
 import searchButton from '../../../images/search__btn.svg'
 
 function SearchForm({
+  isRequired,
   isSearchInSaved,
   setIsSearchInSaved,
   set,
@@ -24,17 +25,8 @@ function SearchForm({
     inputName,
     isValid,
     handleChange,
-    resetForm
+    resetForm,
   } = useForm();
-
-
-  // const movieRequest = values[]
-
-  // function hadleToggleShortMovies() {
-  //   sessionStorage.setItem('toggle', JSON.stringify(!shortMovieToggle));
-  //   setShortMovieToggle(!shortMovieToggle);
-  // values.movie && handleFindMovies(values.movie);
-  // }
 
 
   function handleSubmit(e) {
@@ -42,9 +34,11 @@ function SearchForm({
     handleFindMovies(values.movie);
   }
 
+
   useEffect(() => {
     (sets === 'saved-movies') && setIsSearchInSaved(true)
   }, [])
+
 
   useEffect(() => {
     !isSearchInSaved
@@ -57,16 +51,6 @@ function SearchForm({
       setValues({ ...values, movie: '' })
   }, [handleFindMovies])
 
-  // useEffect(() => {
-  //   !isSearchInSaved
-  //     ?
-  //     setValues({
-  //       ...values,
-  //       movie: JSON.parse(sessionStorage.getItem('search'))
-  //     })
-  //     :
-  //     setValues({ ...values, movie: '' })
-  // }, [handleFindMovies])
 
 
   return (
@@ -83,13 +67,13 @@ function SearchForm({
           minLength="2"
           maxLength="30"
           name="movie"
-          required
+          required={isRequired}
           onChange={handleChange}
           value={values.movie}
         ></input>
         <button
           className="search__btn"
-          disabled={(!isSearchInSaved && !isValid) ? true : false}
+        // disabled={(!isSearchInSaved && !isValid) ? true : false}
         >
 
           <img

@@ -51,16 +51,10 @@ function App() {
       .then((res) => {
         if (res.email) {
           navigate('/signin', { replace: true })
-          // setSuccess(true);
-          // setInfoTooltipOpen(true);
         }
         return
       })
       .catch(err => console.log(err))
-    // setErrorMessage(err);
-    // setSuccess(false);
-    // setInfoTooltipOpen(true);
-    // })
   }
 
 
@@ -111,37 +105,16 @@ function App() {
   }
 
 
-  function handleDeleteMovie(id) {
-    console.log(savedMovies)
-    MainApi.deleteMovie(id)
-      .then(() => {
-        setSavedMovies(MainApi.getSavedMovies())
+  function handleDeleteMovie(movie) {
+    setIsLoading(true);
+    let movieId = movie.movieId || movie.id;
+    let movieForDelete = savedMovies.find(movie => movie.movieId === movieId || movie.id === movieId);
 
-      })
+    MainApi.deleteMovie(movieForDelete)
+      .then(setSavedMovies(savedMovies.filter(c => c.movieId !== movieId && c.id !== movieId)))
       .catch(err => console.log(err))
-
+      .finally(() => setIsLoading(false))
   }
-
-  // function handleDeleteMovie(movieID) {
-  //   const removedMovie = savedMovies.find((item) => {
-  //     return item.movieId === movieID ? item : "";
-  //   });
-  //   MainApi.deleteMovie(removedMovie._id)
-  //     .then(() => {
-  //       setSavedMovies((savedMovies) =>
-  //         savedMovies.filter((c) => (c.movieId === movieID ? "" : c))
-  //       );
-  //       // setMovies((state) => {
-  //       //   return state.map((item) =>
-  //       //     item.id === movieID ? { ...item, class: "notLiked" } : item
-  //       //   );
-  //       // });
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //     });
-  // }
-
 
 
   useEffect(() => {
@@ -235,6 +208,8 @@ function App() {
                     isSearchInSaved={isSearchInSaved}
                     setIsSearchInSaved={setIsSearchInSaved}
                     isLoggedIn={isLoggedIn}
+                    isLoading={isLoading}
+                    setIsLoading={setIsLoading}
                     savedMovies={savedMovies}
                     handleLikeMovie={handleLikeMovie}
                     handleDeleteMovie={handleDeleteMovie}

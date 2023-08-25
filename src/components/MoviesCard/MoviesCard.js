@@ -41,7 +41,7 @@ function MoviesCard({
     checkLike(card, savedMovies)
     !isLiked
       ? handleLikeMovie(movie)
-      : handleDeleteMovie(movie._id)
+      : handleDeleteMovie(movie)
     setIsLiked(!isLiked)
   }
 
