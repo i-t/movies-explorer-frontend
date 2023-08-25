@@ -1,82 +1,267 @@
-// import logo from '../../images/logo.svg';
-import React from "react";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Route, Routes, useNavigate, Navigate } from "react-router-dom";
 
 import './App.css';
+
 import Login from '../Login/Login.js';
 import Main from '../Main/Main.js';
 import Movies from '../Movies/Movies.js';
 import Profile from '../Profile/Profile.js';
 import Register from '../Register/Register.js';
 import SavedMovies from '../SavedMovies/SavedMovies.js';
-import NotFound from '../NotFound/NotFound.js'
+import NotFound from '../NotFound/NotFound.js';
+import Preloader from "../Preloader/Preloader.js";
+
+import * as MainApi from '../../utils/MainApi.js';
+
+import ProtectedRoute from '../ProtectedRoute/ProtectedRoute.js';
+import { CurrentUserContext } from '../../context/CurrentUserContext.js';
 
 function App() {
 
-  let isLoggedIn = true;
+  const navigate = useNavigate();
+  const [isLoggedIn, setLoggedIn] = useState(true);
+  const [currentUser, setCurrentUser] = useState({});
+  const [savedMovies, setSavedMovies] = useState([]);
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSearchInSaved, setIsSearchInSaved] = useState(false);
+
+  useEffect(() => {
+    setIsLoading(true);
+    const jwt = localStorage.getItem('token');
+    if (jwt) {
+      MainApi.checkToken(jwt)
+        .then((res) => {
+          setLoggedIn(true);
+          console.log('токен ОК')
+        })
+        .catch((err) => {
+          console.log(err)
+          setLoggedIn(false)
+          console.log('АЛАРМ')
+        })
+        .finally(() => setIsLoading(false))
+    }
+  }, [isLoggedIn])
+
+
+  function handleSignUp(email, password, name) {
+    MainApi.signUp(email, password, name)
+      .then((res) => {
+        if (res.email) {
+          navigate('/signin', { replace: true })
+          // setSuccess(true);
+          // setInfoTooltipOpen(true);
+        }
+        return
+      })
+      .catch(err => console.log(err))
+    // setErrorMessage(err);
+    // setSuccess(false);
+    // setInfoTooltipOpen(true);
+    // })
+  }
+
+
+  function handleSignIn(email, password) {
+    MainApi.signIn(email, password)
+      .then((data) => {
+        if (data.token) {
+          localStorage.setItem('token', data.token);
+          setLoggedIn(true);
+          navigate('/movies', { replace: true })
+        }
+      })
+      .catch(err => console.log(err))
+  }
+
+
+  function handleLogout() {
+    localStorage.clear('token');
+    sessionStorage.clear('search');
+    sessionStorage.clear('found');
+    sessionStorage.clear('toggle');
+    sessionStorage.clear('cards');
+    sessionStorage.clear('movieList');
+    setLoggedIn(false);
+    setCurrentUser({});
+  }
+
+
+  function handleUpdateUser(data) {
+    MainApi.setUserData(data)
+      .then((res) => {
+        setCurrentUser(res);
+      })
+      .catch(err => console.log(err))
+  }
+
+
+  function handleLikeMovie(movie) {
+    MainApi.likeMovie(movie)
+      .then((res) => {
+        MainApi.getSavedMovies()
+          .then(saved => {
+            setSavedMovies(saved);
+            console.log('фильм лайкнули')
+          })
+      })
+      .catch(err => console.log(err))
+  }
+
+
+  function handleDeleteMovie(id) {
+    console.log(savedMovies)
+    MainApi.deleteMovie(id)
+      .then(() => {
+        setSavedMovies(MainApi.getSavedMovies())
+
+      })
+      .catch(err => console.log(err))
+
+  }
+
+  // function handleDeleteMovie(movieID) {
+  //   const removedMovie = savedMovies.find((item) => {
+  //     return item.movieId === movieID ? item : "";
+  //   });
+  //   MainApi.deleteMovie(removedMovie._id)
+  //     .then(() => {
+  //       setSavedMovies((savedMovies) =>
+  //         savedMovies.filter((c) => (c.movieId === movieID ? "" : c))
+  //       );
+  //       // setMovies((state) => {
+  //       //   return state.map((item) =>
+  //       //     item.id === movieID ? { ...item, class: "notLiked" } : item
+  //       //   );
+  //       // });
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // }
+
+
+
+  useEffect(() => {
+    Promise.all([
+      MainApi.getCurrentUser(),
+      MainApi.getSavedMovies()
+    ])
+      .then(([user, saved]) => {
+        setCurrentUser(user);
+        setSavedMovies(saved);
+        sessionStorage.setItem('saved', JSON.stringify(saved))
+      })
+      .catch(err => console.log(err))
+      .finally(() => setIsLoading(false))
+  }, [isLoggedIn])
+
+
 
   return (
-    <div className="root">
-      <Routes>
-        {/* Регистрация */}
-        <Route
-          path="/signup" 
-          element={
-            <Register />
-          }>
-        </Route>
-        {/* Логин */}
-        <Route
-          path="/signin" 
-          element={
-            <Login />
-          }>
-        </Route>
-        {/* Главная */}
-        <Route
-          path="/"
-          element={
-            <Main 
+    <CurrentUserContext.Provider value={currentUser}>
+      <div className="root">
+        {isLoading ? <Preloader /> :
+          <Routes>
+            <Route
+              path="/signup"
+              element={!isLoggedIn
+                ?
+                <Register
+                  auth={handleSignUp}
+                  isLoggedIn={isLoggedIn}
+                />
+                :
+                <Navigate to='/movies' />
+              }
             />
-          }>
-        </Route>
-        {/* Поиск фильмов */}
-        <Route
-          path="/movies" 
-          element={
-            <Movies 
-              isLoggedIn={isLoggedIn}
+            <Route
+              path="/signin"
+              element={
+                !isLoggedIn
+                  ?
+                  <Login
+                    auth={handleSignIn}
+                    isLoggedIn={isLoggedIn}
+                  />
+                  :
+                  <Navigate to='/movies' />
+              }
             />
-          }>
-        </Route>
-        {/* Сохраненные фильмы */}
-        <Route
-          path="/saved-movies" 
-          element={
-            <SavedMovies 
-              isLoggedIn={isLoggedIn}
+            <Route
+              path="/"
+              element={
+                <Main
+                  isLoggedIn={isLoggedIn}
+                />
+              }
             />
-          }>
-        </Route>
-        {/* Профиль */}
-        <Route
-          path="/profile" 
-          element={
-            <Profile 
-              name="Егор"
-              isLoggedIn={isLoggedIn}
+            <Route
+              path="*"
+              element={
+                <NotFound
+                />
+              }
             />
-        }></Route>
-        {/* Нет страницы */}
-        <Route
-          path="*" 
-          element={
-            <NotFound 
+            <Route
+              path="/movies"
+              element={
+                isLoggedIn
+                  ?
+                  <ProtectedRoute
+                    isSearchInSaved={isSearchInSaved}
+                    setIsSearchInSaved={setIsSearchInSaved}
+                    navigate={navigate}
+                    isLoggedIn={isLoggedIn}
+                    isLoading={isLoading}
+                    setIsLoading={setIsLoading}
+                    savedMovies={savedMovies}
+                    handleLikeMovie={handleLikeMovie}
+                    handleDeleteMovie={handleDeleteMovie}
+                    component={Movies}
+                  />
+                  :
+                  <Navigate to='/' />
+              }
             />
-          }>
-        </Route>
-      </Routes>
-    </div>
+            <Route
+              path="/saved-movies"
+              element={
+                isLoggedIn
+                  ?
+                  <ProtectedRoute
+                    isSearchInSaved={isSearchInSaved}
+                    setIsSearchInSaved={setIsSearchInSaved}
+                    isLoggedIn={isLoggedIn}
+                    savedMovies={savedMovies}
+                    handleLikeMovie={handleLikeMovie}
+                    handleDeleteMovie={handleDeleteMovie}
+                    component={SavedMovies}
+                  />
+                  :
+                  <Navigate to='/' />
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                isLoggedIn
+                  ?
+                  <ProtectedRoute
+                    isLoggedIn={isLoggedIn}
+                    currentUser={currentUser}
+                    handleLogout={handleLogout}
+                    handleUpdateUser={handleUpdateUser}
+                    component={Profile}
+                  />
+                  :
+                  <Navigate to='/' />
+              } />
+          </Routes>}
+      </div>
+    </CurrentUserContext.Provider>
   );
 }
 

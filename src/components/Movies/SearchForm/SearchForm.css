@@ -54,6 +54,17 @@
   opacity: .8;
 }
 
+.search__btn:hover:disabled {
+  opacity: .5;
+
+}
+
+.search__btn:disabled {
+  opacity: .5;
+  cursor: auto;
+
+}
+
 .search__toggle {
   position: relative;
   display: flex;
@@ -102,11 +113,11 @@
   transition: .4s;
 }
 
-.search__checkbox:checked + .search__checkbox-style {
+.search__checkbox:checked+.search__checkbox-style {
   background-color: #3DDC84;
 }
 
-.search__checkbox:checked + .search__checkbox-style:after {
+.search__checkbox:checked+.search__checkbox-style:after {
   left: calc(100% - 2px);
   transform: translateX(-100%);
   background-color: #FFF;

@@ -1,37 +1,88 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-import MoviesCardImage from '../../images/movies-card__image.jpg'
-// import SavedCardIcon from '../../images/movies-card__saved.svg'
 
-function MoviesCard({icon}) {
+function MoviesCard({
+  sets,
+  BASE_URL,
+  icon,
+  card,
+  savedMovies,
+  handleLikeMovie,
+  handleDeleteMovie
+}) {
+  const [isLiked, setIsLiked] = useState(false);
 
-  const [likeMovie, setLikeMovie] = useState(false);
 
-  const handleToggleLike = () => {
-    setLikeMovie(!likeMovie);
+  let movie = card;
+  let movieId;
+
+
+  function calcDuration(mins) {
+    let hours = Math.trunc(mins / 60);
+    let minutes = mins % 60;
+    return hours + 'ч ' + minutes + 'м';
   }
+
+
+  function checkLike() {
+    if (sets === 'movies') {
+      savedMovies.find((savedMovie) => {
+        savedMovie.movieId === movie.id
+          && ((movieId = savedMovie._id) && setIsLiked(true) && console.log(movieId))
+        return movieId;
+      })
+    } else {
+      setIsLiked(true)
+    }
+  }
+
+
+  function toggleLikeCard() {
+    checkLike(card, savedMovies)
+    !isLiked
+      ? handleLikeMovie(movie)
+      : handleDeleteMovie(movie._id)
+    setIsLiked(!isLiked)
+  }
+
+
+  useEffect(() => {
+    checkLike()
+  }, [savedMovies])
+
+
+
   return (
-    <li className="movies-card">
+    <li
+      // key={card._id }
+      className="movies-card">
       <span className="movies-card__image-container">
-        <img 
-          className="movies-card__image" 
-          src={MoviesCardImage} 
-          alt="Обложка фильма «33 слова о дизайне»"
-        ></img>
-        {likeMovie ? (
+        <a
+          href={card.trailerLink}
+          target="_blank"
+          rel="noreferrer"
+        >
+          <img
+            className="movies-card__image"
+            src={sets === 'movies' ? `https://api.nomoreparties.co/${card.image.url}` : card.image}
+            alt={`Обложка фильма ${card.nameRU}`}
+          ></img>
+        </a>
+
+        {isLiked ? (
           <button className="movies-card__button movies-card__saved"
-            onClick={handleToggleLike}
+            onClick={toggleLikeCard}
           >
-            <img src={icon} alt="В избранном"></img> 
-          </button> 
+            <img src={icon} alt="В избранном"></img>
+          </button>
         ) : (
           <button className="movies-card__button"
-            onClick={handleToggleLike}
+            onClick={toggleLikeCard}
           >Сохранить</button>
-        ) }
+        )}
       </span>
-      <h2 className="movies-card__title">33 слова о дизайне</h2>
-      <p className="movies-card__duration">1ч 17м</p>
+      <h2 className="movies-card__title">{card.nameRU}</h2>
+      <p className="movies-card__duration">{calcDuration(card.duration)}</p>
     </li>
   )
 }

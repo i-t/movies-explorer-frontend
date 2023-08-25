@@ -1,29 +1,28 @@
+import { useEffect } from 'react';
 import MoviesCard from '../MoviesCard/MoviesCard';
 
-function MoviesCardList({icon}) {
+function MoviesCardList(props) {
 
+  // useEffect(() => {
 
+  // }, [props.savedMovies])
 
   return (
     <ul className="movies-list">
-      <MoviesCard 
-        icon={icon}
-      />
-      <MoviesCard 
-        icon={icon}
-      />
-      <MoviesCard 
-        icon={icon}
-      />
-      <MoviesCard 
-        icon={icon}
-      />
-      <MoviesCard 
-        icon={icon}
-      />
-      <MoviesCard 
-        icon={icon}
-      />
+      {props.movieCards.map(card => {
+        return (
+          <MoviesCard
+            sets={props.sets}
+            // BASE_URL={props.BASE_URL}
+            icon={props.icon}
+            card={card}
+            key={card.id || card.movieId}
+            savedMovies={props.savedMovies}
+            handleLikeMovie={props.handleLikeMovie}
+            handleDeleteMovie={props.handleDeleteMovie}
+          />
+        )
+      })}
     </ul>
   )
 }

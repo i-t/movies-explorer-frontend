@@ -147,7 +147,7 @@
 @media screen and (max-width: 1024px) {
   .header {
     padding: 18px 30px;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: auto 1fr;
   }
 
   .header__nav {
@@ -166,6 +166,5 @@
 @media screen and (max-width: 640px) {
   .header {
     padding: 18px 14px;
-    grid-template-columns: 1fr 1fr;
   }
 }
