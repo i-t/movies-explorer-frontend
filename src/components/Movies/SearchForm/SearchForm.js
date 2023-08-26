@@ -1,31 +1,22 @@
 import React, { useEffect } from 'react';
 
 import useForm from '../../../hooks/useForm.js';
-import { INPUT_ERROR } from '../../../utils/constants.js';
-
 import searchButton from '../../../images/search__btn.svg'
 
 function SearchForm({
   isRequired,
   isSearchInSaved,
   setIsSearchInSaved,
-  set,
   handleFindMovies,
-
   sets,
   shortMovieToggle,
-  setShortMovieToggle,
   handleShortMovieToggle
 }) {
 
   const {
     values,
     setValues,
-    errors,
-    inputName,
-    isValid,
     handleChange,
-    resetForm,
   } = useForm();
 
 
@@ -73,7 +64,6 @@ function SearchForm({
         ></input>
         <button
           className="search__btn"
-        // disabled={(!isSearchInSaved && !isValid) ? true : false}
         >
 
           <img

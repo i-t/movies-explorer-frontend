@@ -1,5 +1,3 @@
-// export const REGEX_URL = /^https?:\/\/(?:w{3}\.)?(?:[a-z0-9]+[a-z0-9-]*\.)+[a-z]{2,}(?::[0-9]+)?(?:\/\S*)?#?$/i;
-
 export const MAIN_API_URL = 'https://api.mvs.nomoreparties.sbs';
 export const MOVIES_API_URL = 'https://api.nomoreparties.co/beatfilm-movies';
 export const CONTENT_URL = 'https://api.nomoreparties.co/';
@@ -33,7 +31,3 @@ export const SCREEN_MOBILE = {
 };
 
 export const SHORT_MOVIE_DURATION = 40;
-
-// export const SCREEN_WIDTH = () => {
-//   window.innerWidth > 1280
-// }

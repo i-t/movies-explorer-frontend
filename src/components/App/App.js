@@ -20,11 +20,12 @@ import { CurrentUserContext } from '../../context/CurrentUserContext.js';
 function App() {
 
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
   const [isLoggedIn, setLoggedIn] = useState(true);
   const [currentUser, setCurrentUser] = useState({});
   const [savedMovies, setSavedMovies] = useState([]);
 
-  const [isLoading, setIsLoading] = useState(false);
+
   const [isSearchInSaved, setIsSearchInSaved] = useState(false);
 
   useEffect(() => {
@@ -34,12 +35,10 @@ function App() {
       MainApi.checkToken(jwt)
         .then((res) => {
           setLoggedIn(true);
-          console.log('токен ОК')
         })
         .catch((err) => {
           console.log(err)
           setLoggedIn(false)
-          console.log('АЛАРМ')
         })
         .finally(() => setIsLoading(false))
     }
@@ -77,7 +76,10 @@ function App() {
     sessionStorage.clear('found');
     sessionStorage.clear('toggle');
     sessionStorage.clear('cards');
-    sessionStorage.clear('movieList');
+    sessionStorage.clear('saved');
+    sessionStorage.clear('saved-short');
+    sessionStorage.clear('short');
+    sessionStorage.clear('moviesList');
     setLoggedIn(false);
     setCurrentUser({});
   }
@@ -98,7 +100,6 @@ function App() {
         MainApi.getSavedMovies()
           .then(saved => {
             setSavedMovies(saved);
-            console.log('фильм лайкнули')
           })
       })
       .catch(err => console.log(err))
@@ -127,7 +128,9 @@ function App() {
         setSavedMovies(saved);
         sessionStorage.setItem('saved', JSON.stringify(saved))
       })
-      .catch(err => console.log(err))
+      .catch((err) => {
+        console.log(err);
+      })
       .finally(() => setIsLoading(false))
   }, [isLoggedIn])
 
@@ -136,8 +139,9 @@ function App() {
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="root">
-        {isLoading ? <Preloader /> :
-          <Routes>
+        {isLoading
+          ? <Preloader />
+          : <Routes>
             <Route
               path="/signup"
               element={!isLoggedIn

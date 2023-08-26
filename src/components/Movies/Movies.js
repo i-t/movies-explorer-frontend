@@ -19,7 +19,7 @@ function Movies(props) {
   const [isLoading, setIsLoading] = useState(false);
   const [moreButton, setMoreButton] = useState(false);
   const [shortMovieToggle, setShortMovieToggle] = useState(false);
-  const [serverError, setServerError] = useState(false)
+  const [serverError, setServerError] = useState(false);
   const [screenWidth, setScreenWidth] = useState([]);
 
   const [moviesList, setMoviesList] = useState([]);
@@ -43,12 +43,12 @@ function Movies(props) {
 
   function getMoviesFromApi() {
     setIsLoading(true)
-    console.log("Забираем фильмы с Api")
+
     MovieApi.getMovies()
       .then(list => {
         setMoviesList(list);
-        sessionStorage.setItem('moviesList', JSON.stringify(list))
         setServerError(false)
+        sessionStorage.setItem('moviesList', JSON.stringify(list))
       })
       .catch(err => {
         setServerError(true)
@@ -157,7 +157,6 @@ function Movies(props) {
         <SearchForm
           sets='movies'
           shortMovieToggle={shortMovieToggle}
-          // setShortMovieToggle={setShortMovieToggle}
           handleShortMovieToggle={handleShortMovieToggle}
           handleFindMovies={handleFindMovies}
         />
@@ -170,28 +169,23 @@ function Movies(props) {
               icon={SavedCardIcon}
               isLoading={isLoading}
               movieCards={movieCards}
-              // isSearchInSaved={props.isSearchInSaved}
               savedMovies={props.savedMovies}
               handleLikeMovie={props.handleLikeMovie}
               handleDeleteMovie={props.handleDeleteMovie}
             />
             : <p className="no-result">
-              {!searchRequest ? '' : serverError
-                ? SEARCH_ERROR.noResponce
-                : SEARCH_ERROR.notFound
+              {!searchRequest ? 'Ничего не найдено' : serverError
+                ? `${SEARCH_ERROR.noResponce}`
+                : `${SEARCH_ERROR.notFound}`
               }
             </p>
         }
-
         {(moreButton) &&
           <button
             className="movies__more-btn"
             onClick={addMoreMovies}
-          >
-            Ещё
-          </button>
+          > Ещё</button>
         }
-
       </main>
       <Footer />
     </div>

@@ -1,22 +1,8 @@
 import { Link, NavLink } from 'react-router-dom';
 import xIcon from '../../images/nav__x-btn.svg'
-import { useState } from 'react';
-
 
 
 function Navigation({ openMenu, handleToggleMenu }) {
-
-
-  const [click, setClick] = useState(false);
-
-  function navClick() {
-    let links = document.querySelectorAll('.nav__link').forEach((link) => {
-      link.classList.remove('nav__link_active');
-      links.closest('.nav__link').classList.add('.nav__link_active')
-    })
-  }
-
-
 
   return (
     <div className={`nav ${openMenu ? "nav_active" : ""}`}>
@@ -68,7 +54,6 @@ function Navigation({ openMenu, handleToggleMenu }) {
         Аккаунт
       </Link>
     </div>
-
   )
 }
 

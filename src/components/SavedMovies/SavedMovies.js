@@ -1,12 +1,11 @@
 import { useState, useEffect } from 'react';
 
-import { useForm } from '../../hooks/useForm';
-
 import SearchForm from '../Movies/SearchForm/SearchForm';
 import MoviesCardList from '../MoviesCardList/MoviesCardList';
 import RemoveCardIcon from '../../images/saved-movies__delete-icon.svg'
 import Header from '../Header/Header';
 import Footer from '../Footer/Footer';
+import Preloader from '../Preloader/Preloader';
 import * as MainApi from '../../utils/MainApi.js'
 import {
   SHORT_MOVIE_DURATION,
@@ -22,9 +21,7 @@ function SavedMovies(props) {
   const [savedMovies, setSavedMovies] = useState([]);
   const [cardsToRender, setCardsToRender] = useState([]);
   const [shortFilms, setShortFilms] = useState([]);
-  const [foundMovies, setFoundMovies] = useState([]);
 
-  const [movieCards, setMovieCards] = useState([]);
   const [searchRequest, setSearchRequest] = useState('');
 
 
@@ -35,11 +32,17 @@ function SavedMovies(props) {
 
   function getMoviesFromApi() {
     setIsLoading(true);
+    setServerError(false);
     MainApi.getSavedMovies()
       .then((saved) => {
         setCardsToRender(saved)
         sessionStorage.setItem('saved', JSON.stringify(saved))
       })
+      .catch((err) => {
+        console.log(err);
+        setServerError(true)
+      })
+
     setIsLoading(false);
   }
 
@@ -76,6 +79,7 @@ function SavedMovies(props) {
             && (movie.duration <= SHORT_MOVIE_DURATION
               && short.push(movie)));
       })
+      setSearchRequest(search)
       setCardsToRender(found);
       setShortFilms(short);
     } else {
@@ -115,29 +119,32 @@ function SavedMovies(props) {
       <main className="movies">
         <SearchForm
           shortMovieToggle={shortMovieToggle}
-          // setShortMovieToggle={setShortMovieToggle}
           handleShortMovieToggle={handleShortMovieToggle}
           isSearchInSaved={props.isSearchInSaved}
           handleFindMovies={handleFindMovies}
           isRequired={false}
         />
-        {cardsToRender
-          ? <MoviesCardList
-            sets="saved-movies"
-            icon={RemoveCardIcon}
-            movieCards={cardsToRender}
-            savedMovies={props.savedMovies}
-            isSearchInSaved={props.isSearchInSaved}
-            handleLikeMovie={props.handleLikeMovie}
-            handleDeleteMovie={props.handleDeleteMovie}
-          />
-          :
-          <p className="no-result">
-            {!searchRequest ? 'Вы еще ничего не добавили' : serverError
-              ? SEARCH_ERROR.noResponce
-              : SEARCH_ERROR.notFound
-            }
-          </p>
+        {isLoading
+          ? <Preloader />
+          : cardsToRender.length
+            ? <MoviesCardList
+              sets="saved-movies"
+              icon={RemoveCardIcon}
+              movieCards={cardsToRender}
+              savedMovies={props.savedMovies}
+              isSearchInSaved={props.isSearchInSaved}
+              handleLikeMovie={props.handleLikeMovie}
+              handleDeleteMovie={props.handleDeleteMovie}
+            />
+            :
+            <p className="no-result">
+              {!searchRequest
+                ? 'Вы еще ничего не добавили'
+                : serverError
+                  ? `${SEARCH_ERROR.noResponce}`
+                  : `${SEARCH_ERROR.notFound}`
+              }
+            </p>
         }
       </main>
       <Footer />
@@ -147,4 +154,3 @@ function SavedMovies(props) {
 }
 
 export default SavedMovies;
-// MainApi.getSavedMovies()

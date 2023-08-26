@@ -9,9 +9,8 @@ const getJson = (res) => {
 }
 
 export function getMovies() {
-  return fetch(`${MOVIES_API_URL}/`, {
+  return fetch(`${MOVIES_API_URL}`, {
     method: "GET",
-    // headers: getHeaders()
   })
     .then(getJson);
 }

@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import MoviesCard from '../MoviesCard/MoviesCard';
 
 function MoviesCardList(props) {

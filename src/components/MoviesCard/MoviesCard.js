@@ -3,15 +3,14 @@ import { useState, useEffect } from 'react';
 
 function MoviesCard({
   sets,
-  BASE_URL,
   icon,
   card,
   savedMovies,
   handleLikeMovie,
   handleDeleteMovie
 }) {
-  const [isLiked, setIsLiked] = useState(false);
 
+  const [isLiked, setIsLiked] = useState(false);
 
   let movie = card;
   let movieId;
@@ -28,7 +27,8 @@ function MoviesCard({
     if (sets === 'movies') {
       savedMovies.find((savedMovie) => {
         savedMovie.movieId === movie.id
-          && ((movieId = savedMovie._id) && setIsLiked(true) && console.log(movieId))
+          && ((movieId = savedMovie._id)
+            && setIsLiked(true))
         return movieId;
       })
     } else {
@@ -54,7 +54,6 @@ function MoviesCard({
 
   return (
     <li
-      // key={card._id }
       className="movies-card">
       <span className="movies-card__image-container">
         <a

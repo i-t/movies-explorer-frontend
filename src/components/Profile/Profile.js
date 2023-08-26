@@ -4,23 +4,18 @@ import Header from '../Header/Header.js';
 import { CurrentUserContext } from '../../context/CurrentUserContext.js'
 
 import useForm from '../../hooks/useForm.js';
-import { INPUT_ERROR } from '../../utils/constants.js';
 
 function Profile(props) {
-  // const [name, setName] = useState('');
-  // const [email, setEmail] = useState('');
 
+  // const [editBtnText, setEditBtnText] = useState('Редактировать');
+  // const [isSuccess, setIsSucces] = useState(false)
   const { name, email } = useContext(CurrentUserContext);
   const {
     values,
     setValues,
-    isSuccess,
     setIsSucces,
-    // errors,
-    // inputName,
     isValid,
     handleChange,
-    // resetForm
   } = useForm();
 
   useEffect(() => {
@@ -67,10 +62,11 @@ function Profile(props) {
               required
               onChange={handleChange}
               value={values.name}
-            // placeholder="Егор"
             ></input>
           </label>
-          <span className="profile__stroke"></span>
+          <span
+            className="profile__stroke"
+          ></span>
           <label
             className="profile__label"
             for="email"
@@ -85,7 +81,6 @@ function Profile(props) {
               required
               onChange={handleChange}
               value={values.email}
-            // placeholder="pochta@yandex.ru"
             ></input>
           </label>
         </form>
@@ -94,13 +89,11 @@ function Profile(props) {
           form="profile__form"
           disabled={
             (values.name === name && values.email === email) || !isValid
-              ?
-              true : false
+              ? true : false
           }
-        // onClick={handleSubmit}
         >
           Редактировать
-          {/* {!isSuccess && isValid ? 'Редактировать' : 'Данные успешно обновлены'} */}
+          {/* {(!isSuccess) ? `Редактировать` : 'Данные успешно обновлены'} */}
         </button>
         <Link
           className="profile__logout"
