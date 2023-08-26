@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 
 import SearchForm from './SearchForm/SearchForm';
 import MoviesCardList from '../MoviesCardList/MoviesCardList';
-// import MoviesCard from '../MoviesCard/MoviesCard';
 import SavedCardIcon from '../../images/movies-card__saved.svg'
 import Header from '../Header/Header';
 import Footer from '../Footer/Footer';
@@ -23,7 +22,7 @@ function Movies(props) {
   const [serverError, setServerError] = useState(false)
   const [screenWidth, setScreenWidth] = useState([]);
 
-  const [moviesList, setMoviesList] = useState([]); // Все фильмы с API
+  const [moviesList, setMoviesList] = useState([]);
   const [foundMovies, setFoundMovies] = useState([]);
   const [shortFilms, setShortFilms] = useState([]);
   const [movieCards, setMovieCards] = useState([]);
@@ -142,7 +141,6 @@ function Movies(props) {
 
 
   useEffect(() => {
-    // showResult()
     foundMovies.length === movieCards.length || shortMovieToggle
       ? setMoreButton(false)
       : setMoreButton(true)
