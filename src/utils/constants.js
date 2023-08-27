@@ -10,8 +10,10 @@ export const INPUT_ERROR = {
 }
 
 export const SEARCH_ERROR = {
+  default: '',
   notFound: 'Ничего не найдено',
   noResponce: 'Во время запроса произошла ошибка. Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз',
+  noRequest: 'Нужно ввести ключевое слово'
 }
 
 export const SCREEN_DESCTOPE = {

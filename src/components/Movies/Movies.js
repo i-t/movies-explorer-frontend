@@ -17,9 +17,11 @@ import {
 
 function Movies(props) {
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoad, setIsLoad] = useState(false);
   const [moreButton, setMoreButton] = useState(false);
   const [shortMovieToggle, setShortMovieToggle] = useState(false);
   const [serverError, setServerError] = useState(false);
+
   const [screenWidth, setScreenWidth] = useState([]);
 
   const [moviesList, setMoviesList] = useState([]);
@@ -29,11 +31,24 @@ function Movies(props) {
 
   const [searchRequest, setSearchRequest] = useState('');
 
+  const [noResultMessage, setNoResultMessage] = useState(SEARCH_ERROR.default);
+
+
+  useEffect(() => {
+    isLoad &&
+      foundMovies.length === movieCards.length || shortMovieToggle
+      ? setMoreButton(false)
+      : setMoreButton(true)
+  }, [movieCards])
+
 
   function handleShortMovieToggle() {
     checkScreenWidth();
 
-    (setShortMovieToggle(!shortMovieToggle))
+    sessionStorage.setItem('toggle',
+      JSON.stringify(!shortMovieToggle));
+
+    setShortMovieToggle(!shortMovieToggle)
     !shortMovieToggle
       ? setMovieCards(shortFilms)
       : setMovieCards(foundMovies
@@ -72,6 +87,7 @@ function Movies(props) {
 
   function addMoreMovies() {
     checkScreenWidth();
+
     if (!shortMovieToggle) {
       let moreCards = foundMovies;
       let cards = movieCards;
@@ -80,71 +96,82 @@ function Movies(props) {
 
       setMovieCards([...cards, ...add])
     }
-    else {
-      setMoreButton(false)
-    }
+    else { setMoreButton(false) }
   }
 
 
   function handleFindMovies(search) {
-    setIsLoading(true);
-    let found = [];
-    let short = [];
+    if (search) {
+      setIsLoading(true);
+      let found = [];
+      let short = [];
 
-    !moviesList.length && getMoviesFromApi();
+      !moviesList.length && getMoviesFromApi();
 
-    moviesList.forEach(movie => {
+      moviesList.forEach(movie => {
+        (movie.nameRU.toLowerCase().includes(search)
+          || movie.nameEN.toLowerCase().includes(search))
+          && (found.push(movie)
+            && (movie.duration <= SHORT_MOVIE_DURATION
+              && short.push(movie)));
+      })
+      if (found.length > 0) {
+        let cards = found
+          .slice(0, screenWidth.length);
 
-      (movie.nameRU.toLowerCase().includes(search)
-        || movie.nameEN.toLowerCase().includes(search))
-        && (found.push(movie)
-          && (movie.duration <= SHORT_MOVIE_DURATION
-            && short.push(movie)));
-    })
-    let cards = found.slice(0, screenWidth.length)
+        setFoundMovies(found);
+        setSearchRequest(search);
+        setShortFilms(short);
 
-    setFoundMovies(found);
-    setShortFilms(short);
-    setMovieCards(cards);
-    setSearchRequest(search);
+        shortMovieToggle
+          ? setMovieCards(short)
+          : setMovieCards(cards)
+
+        setIsLoad(true);
+
+        sessionStorage.setItem('cards', JSON.stringify(cards));
+        sessionStorage.setItem('short', JSON.stringify(short));
+        sessionStorage.setItem('found', JSON.stringify(found));
+        sessionStorage.setItem('search', JSON.stringify(search));
+      } else {
+        sessionStorage.setItem('search', JSON.stringify(search));
+        setFoundMovies([]);
+        setMovieCards([]);
+        setShortFilms([]);
+        setIsLoad(false);
+        setNoResultMessage(
+          SEARCH_ERROR.notFound
+        );
+      }
+    } else {
+      setIsLoad(false);
+      setNoResultMessage(SEARCH_ERROR.noRequest);
+    }
+
     setIsLoading(false);
-
-    sessionStorage.setItem('cards', JSON.stringify(cards));
-    sessionStorage.setItem('short', JSON.stringify(short));
-    sessionStorage.setItem('found', JSON.stringify(found));
-    sessionStorage.setItem('search', JSON.stringify(search));
   }
 
 
   useEffect(() => {
     checkScreenWidth();
 
-    handleFindMovies(
-      JSON.parse(sessionStorage.getItem('search'))
-    );
-    setFoundMovies(
-      JSON.parse(sessionStorage.getItem('found'))
-    );
-    setShortMovieToggle(
-      JSON.parse(sessionStorage.getItem('toggle'))
-    );
+    setShortMovieToggle(JSON.parse(sessionStorage
+      .getItem('toggle')));
+
+    handleFindMovies(JSON.parse(sessionStorage
+      .getItem('search')));
+
+    setFoundMovies(JSON.parse(sessionStorage
+      .getItem('found')));
 
     shortMovieToggle
-      ? setMovieCards(
-        JSON.parse(sessionStorage.getItem('short'))
-      )
-      : setMovieCards(
-        JSON.parse(sessionStorage.getItem('cards'))
-      )
+      ? setMovieCards(JSON.parse(sessionStorage
+        .getItem('short')))
+
+      : setMovieCards(JSON.parse(sessionStorage
+        .getItem('cards')))
 
   }, [moviesList])
-
-
-  useEffect(() => {
-    foundMovies.length === movieCards.length || shortMovieToggle
-      ? setMoreButton(false)
-      : setMoreButton(true)
-  }, [movieCards])
 
 
 
@@ -163,7 +190,7 @@ function Movies(props) {
         {isLoading
           ?
           <Preloader />
-          : movieCards.length
+          : (isLoad && movieCards > 0)
             ? <MoviesCardList
               sets="movies"
               icon={SavedCardIcon}
@@ -174,13 +201,13 @@ function Movies(props) {
               handleDeleteMovie={props.handleDeleteMovie}
             />
             : <p className="no-result">
-              {!searchRequest ? 'Ничего не найдено' : serverError
-                ? `${SEARCH_ERROR.noResponce}`
-                : `${SEARCH_ERROR.notFound}`
+              {serverError
+                ? SEARCH_ERROR.noResponce
+                : noResultMessage
               }
             </p>
         }
-        {(moreButton) &&
+        {(moreButton && isLoad) &&
           <button
             className="movies__more-btn"
             onClick={addMoreMovies}

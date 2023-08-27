@@ -20,8 +20,8 @@ import { CurrentUserContext } from '../../context/CurrentUserContext.js';
 function App() {
 
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false);
-  const [isLoggedIn, setLoggedIn] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isLoggedIn, setLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState({});
   const [savedMovies, setSavedMovies] = useState([]);
 
@@ -33,7 +33,7 @@ function App() {
     const jwt = localStorage.getItem('token');
     if (jwt) {
       MainApi.checkToken(jwt)
-        .then((res) => {
+        .then(() => {
           setLoggedIn(true);
         })
         .catch((err) => {
@@ -42,7 +42,7 @@ function App() {
         })
         .finally(() => setIsLoading(false))
     }
-  }, [isLoggedIn])
+  }, [])
 
 
   function handleSignUp(email, password, name) {
@@ -63,6 +63,7 @@ function App() {
         if (data.token) {
           localStorage.setItem('token', data.token);
           setLoggedIn(true);
+          setIsLoading(false);
           navigate('/movies', { replace: true })
         }
       })
@@ -137,11 +138,12 @@ function App() {
 
 
   return (
+
     <CurrentUserContext.Provider value={currentUser}>
-      <div className="root">
-        {isLoading
-          ? <Preloader />
-          : <Routes>
+      {isLoading
+        ? <Preloader />
+        : <div className="root">
+          <Routes>
             <Route
               path="/signup"
               element={!isLoggedIn
@@ -238,9 +240,11 @@ function App() {
                   :
                   <Navigate to='/' />
               } />
-          </Routes>}
-      </div>
+          </Routes>
+        </div>
+      }
     </CurrentUserContext.Provider>
+
   );
 }
 
