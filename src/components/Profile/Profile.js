@@ -97,7 +97,7 @@ function Profile(props) {
         </button>
         <Link
           className="profile__logout"
-          to="/signin"
+          to="/"
           onClick={props.handleLogout}
         >
           Выйти из аккаунта
