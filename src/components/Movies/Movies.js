@@ -190,7 +190,7 @@ function Movies(props) {
         {isLoading
           ?
           <Preloader />
-          : (isLoad && movieCards > 0)
+          : isLoad
             ? <MoviesCardList
               sets="movies"
               icon={SavedCardIcon}

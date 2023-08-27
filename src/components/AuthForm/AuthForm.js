@@ -18,25 +18,11 @@ function AuthForm({
 
   const {
     values,
-    // setValues,
     errors,
     inputName,
     isValid,
     handleChange,
-    // resetForm
   } = useForm();
-
-  // const [form, setForm] = useState({});
-  // const [isValid, setIsValid] = useState(false);
-
-  // function handleChange(e) {
-  //   const input = e.target;
-  //   setForm({
-  //     ...form,
-  //     [input.name]: input.value,
-  //   })
-  //   setIsValid(e.target.closest('form').checkValidity());
-  // }
 
 
   function handleSubmit(e) {
