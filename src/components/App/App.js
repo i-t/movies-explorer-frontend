@@ -33,8 +33,9 @@ function App() {
     const jwt = localStorage.getItem('token');
     if (jwt) {
       MainApi.checkToken(jwt)
-        .then(() => {
+        .then((res) => {
           setLoggedIn(true);
+          setIsLoading(false);
         })
         .catch((err) => {
           console.log(err)
@@ -42,14 +43,14 @@ function App() {
         })
         .finally(() => setIsLoading(false))
     }
-  }, [])
+  }, [isLoggedIn])
 
 
   function handleSignUp(email, password, name) {
     MainApi.signUp(email, password, name)
       .then((res) => {
         if (res.email) {
-          navigate('/signin', { replace: true })
+          handleSignIn(email, password)
         }
         return
       })
