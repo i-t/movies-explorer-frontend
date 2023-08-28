@@ -13,7 +13,8 @@ const getJson = (res) => {
   if (res.ok) {
     return res.json();
   }
-  return res.status;
+  // return res.status;
+  return Promise.reject(res.status)
 }
 
 

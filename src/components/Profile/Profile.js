@@ -2,36 +2,66 @@ import { useState, useContext, useEffect } from "react";
 import { Link } from 'react-router-dom';
 import Header from '../Header/Header.js';
 import { CurrentUserContext } from '../../context/CurrentUserContext.js'
+import * as MainApi from '../../utils/MainApi.js'
 
 import useForm from '../../hooks/useForm.js';
 
 function Profile(props) {
 
-  // const [editBtnText, setEditBtnText] = useState('Редактировать');
-  // const [isSuccess, setIsSucces] = useState(false)
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+  const [isErrorMessage, setIsErrorMessage] = useState(false)
   const { name, email } = useContext(CurrentUserContext);
   const {
     values,
     setValues,
-    setIsSucces,
     isValid,
-    handleChange,
+    handleChange
   } = useForm();
 
+
+  function handleUpdateUser(e) {
+    e.preventDefault();
+    MainApi.setUserData({
+      name: values.name,
+      email: values.email
+    })
+      .then((res) => {
+        props.setCurrentUser(res);
+        setIsSuccess(true)
+        setIsButtonDisabled(true)
+        setIsErrorMessage(false)
+      })
+      .catch(err => {
+        setIsSuccess(false)
+        if (err === 409) {
+          setIsErrorMessage(true)
+          setIsButtonDisabled(true)
+        }
+      })
+  }
+
+
   useEffect(() => {
-    setIsSucces(false);
     setValues({ name, email });
   }, [name, email, setValues]);
 
 
-  function handleSubmit(e) {
-    e.preventDefault();
-    props.handleUpdateUser({
-      name: values.name,
-      email: values.email
-    })
-    setIsSucces(true);
-  }
+  useEffect(() => {
+    if ((
+      values.name === name && values.email === email
+    )
+      || !isValid
+    ) {
+      setIsButtonDisabled(true);
+    } else {
+      setIsErrorMessage(false);
+      setIsButtonDisabled(false);
+      setIsSuccess(false);
+    }
+  }, [values]);
+
+
 
   return (
     <div>
@@ -45,7 +75,7 @@ function Profile(props) {
         <form
           className="profile__form"
           id="profile__form"
-          onSubmit={handleSubmit}
+          onSubmit={handleUpdateUser}
         >
           <label
             className="profile__label"
@@ -88,12 +118,12 @@ function Profile(props) {
           className="profile__edit"
           form="profile__form"
           disabled={
-            (values.name === name && values.email === email) || !isValid
-              ? true : false
+            isButtonDisabled
           }
         >
-          Редактировать
-          {/* {(!isSuccess) ? `Редактировать` : 'Данные успешно обновлены'} */}
+          {
+            isSuccess && (values.name === name && values.email === email) ? 'Данные успешно обновлены' : isErrorMessage && 'Пользователь с таким email уже зарегистрирован' || 'Редактировать'
+          }
         </button>
         <Link
           className="profile__logout"
