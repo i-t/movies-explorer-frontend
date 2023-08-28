@@ -6,6 +6,7 @@ import SavedCardIcon from '../../images/movies-card__saved.svg'
 import Header from '../Header/Header';
 import Footer from '../Footer/Footer';
 import Preloader from '../Preloader/Preloader';
+import useForm from "../../hooks/useForm";
 import * as MovieApi from '../../utils/MovieApi.js';
 import {
   SCREEN_DESCTOPE,
@@ -15,8 +16,9 @@ import {
   SEARCH_ERROR
 } from "../../utils/constants";
 
+
 function Movies(props) {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [isLoad, setIsLoad] = useState(false);
   const [moreButton, setMoreButton] = useState(false);
   const [shortMovieToggle, setShortMovieToggle] = useState(false);
@@ -29,36 +31,51 @@ function Movies(props) {
   const [shortFilms, setShortFilms] = useState([]);
   const [movieCards, setMovieCards] = useState([]);
 
-  const [searchRequest, setSearchRequest] = useState('');
+  const [searchRequest, setSearchRequest] = useState();
+
+
 
   const [noResultMessage, setNoResultMessage] = useState(SEARCH_ERROR.default);
 
+  const {
+    values,
+    setValues,
+    handleChange,
+  } = useForm();
+
+
 
   useEffect(() => {
-    isLoad &&
-      foundMovies.length === movieCards.length || shortMovieToggle
+    isLoad
+      &&
+      (foundMovies.length === movieCards.length || shortMovieToggle)
       ? setMoreButton(false)
       : setMoreButton(true)
   }, [movieCards])
 
 
-  function handleShortMovieToggle() {
+
+  function handleShortMovieToggle(search) {
+    // console.log('search')
     checkScreenWidth();
 
     sessionStorage.setItem('toggle',
       JSON.stringify(!shortMovieToggle));
 
+    // sessionStorage.setItem('search',
+    //   search);
     setShortMovieToggle(!shortMovieToggle)
-    !shortMovieToggle
-      ? setMovieCards(shortFilms)
-      : setMovieCards(foundMovies
-        .slice(0, screenWidth.length))
+
+    handleFindMovies(search)
+    // !shortMovieToggle
+    //   ? setMovieCards(shortFilms)
+    //   : setMovieCards(foundMovies
+    //     .slice(0, screenWidth.length))
   }
 
 
   function getMoviesFromApi() {
-    setIsLoading(true)
-
+    // setIsLoading(true)
     MovieApi.getMovies()
       .then(list => {
         setMoviesList(list);
@@ -100,54 +117,70 @@ function Movies(props) {
   }
 
 
-  function handleFindMovies(search) {
-    if (search) {
-      setIsLoading(true);
-      let found = [];
-      let short = [];
+  async function handleFindMovies(search) {
+    // console.log(search)
+    // setSearchRequest(search)
+    setIsLoading(true);
+    setIsLoad(false);
+    // if (search) {
 
-      !moviesList.length && getMoviesFromApi();
+    let found = [];
+    let short = [];
+    // let cards = [];
 
-      moviesList.forEach(movie => {
-        (movie.nameRU.toLowerCase().includes(search)
-          || movie.nameEN.toLowerCase().includes(search))
-          && (found.push(movie)
-            && (movie.duration <= SHORT_MOVIE_DURATION
-              && short.push(movie)));
-      })
-      if (found.length > 0) {
-        let cards = found
-          .slice(0, screenWidth.length);
+    // console.log(typeof moviesList)
+    // if (moviesList.length > 0) {
+    console.log(!moviesList.length)
 
-        setFoundMovies(found);
-        setSearchRequest(search);
-        setShortFilms(short);
-
-        shortMovieToggle
-          ? setMovieCards(short)
-          : setMovieCards(cards)
-
-        setIsLoad(true);
-
-        sessionStorage.setItem('cards', JSON.stringify(cards));
-        sessionStorage.setItem('short', JSON.stringify(short));
-        sessionStorage.setItem('found', JSON.stringify(found));
-        sessionStorage.setItem('search', JSON.stringify(search));
-      } else {
-        sessionStorage.setItem('search', JSON.stringify(search));
-        setFoundMovies([]);
-        setMovieCards([]);
-        setShortFilms([]);
-        setIsLoad(false);
-        setNoResultMessage(
-          SEARCH_ERROR.notFound
-        );
-      }
-    } else {
-      setIsLoad(false);
-      setNoResultMessage(SEARCH_ERROR.noRequest);
+    if (!moviesList.length) {
+      await getMoviesFromApi();
     }
+    // setTimeout(() => {
+    moviesList.forEach(movie => {
+      (movie.nameRU.toLowerCase().includes(search)
+        || movie.nameEN.toLowerCase().includes(search))
+        && (found.push(movie)
+          && (movie.duration <= SHORT_MOVIE_DURATION
+            && short.push(movie)));
+    })
+    // }, 700);
+    // found.length > 0 &&
+    //   (cards = { ...found.slice(0, screenWidth.length) })
+    let cards = found.slice(0, screenWidth.length)
+    setFoundMovies(found);
+    setShortFilms(short);
 
+    JSON.parse(sessionStorage.getItem('toggle'))
+      ? setMovieCards(short)
+      : setMovieCards(cards)
+
+    // setIsLoad(true);
+    // setIsLoading(false);
+
+    sessionStorage.setItem('cards', JSON.stringify(cards));
+    sessionStorage.setItem('short', JSON.stringify(short));
+    sessionStorage.setItem('found', JSON.stringify(found));
+    sessionStorage.setItem('lastSearch', search);
+    // sessionStorage.setItem('search', JSON.stringify(search));
+    // } else {
+    // sessionStorage.setItem('search', JSON.stringify(search));
+    // setFoundMovies([]);
+    // setMovieCards([]);
+    // setShortFilms([]);
+    // setIsLoad(false);
+    // setNoResultMessage(
+    //   SEARCH_ERROR.notFound
+    // );
+    // })
+    // } else {
+    //   setIsLoad(false);
+    //   setNoResultMessage(SEARCH_ERROR.noRequest);
+    // }
+
+
+
+
+    setIsLoad(true);
     setIsLoading(false);
   }
 
@@ -155,14 +188,20 @@ function Movies(props) {
   useEffect(() => {
     checkScreenWidth();
 
+
+
     setShortMovieToggle(JSON.parse(sessionStorage
       .getItem('toggle')));
 
-    handleFindMovies(JSON.parse(sessionStorage
-      .getItem('search')));
+    let lastSearch = sessionStorage
+      .getItem('lastSearch');
 
-    setFoundMovies(JSON.parse(sessionStorage
-      .getItem('found')));
+    handleFindMovies(lastSearch);
+
+    // localStorage.setItem('search', JSON.stringify(lastSearch))
+
+    //   setFoundMovies(JSON.parse(sessionStorage
+    //     .getItem('found')));
 
     shortMovieToggle
       ? setMovieCards(JSON.parse(sessionStorage
@@ -171,8 +210,13 @@ function Movies(props) {
       : setMovieCards(JSON.parse(sessionStorage
         .getItem('cards')))
 
-  }, [moviesList])
+  }, [])
 
+  useEffect(() => {
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 800);
+  }, []);
 
 
   return (
@@ -186,10 +230,11 @@ function Movies(props) {
           shortMovieToggle={shortMovieToggle}
           handleShortMovieToggle={handleShortMovieToggle}
           handleFindMovies={handleFindMovies}
+          searchRequest={searchRequest}
+          setSearchRequest={setSearchRequest}
         />
         {isLoading
-          ?
-          <Preloader />
+          ? <Preloader movies={true} />
           : isLoad
             ? <MoviesCardList
               sets="movies"

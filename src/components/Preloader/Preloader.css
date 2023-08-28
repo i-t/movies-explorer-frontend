@@ -52,6 +52,15 @@
     /* padding: 20px; */
 }
 
+.preloader-movies {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 200px;
+    z-index: 10;
+}
+
 .preloader__container {
     width: 100px;
     height: 100px;

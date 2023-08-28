@@ -24,9 +24,11 @@ function App() {
   const [isLoggedIn, setLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState({});
   const [savedMovies, setSavedMovies] = useState([]);
+  const [isSuccess, setIsSucces] = useState(false);
 
 
   const [isSearchInSaved, setIsSearchInSaved] = useState(false);
+
 
   useEffect(() => {
     setIsLoading(true);
@@ -87,13 +89,7 @@ function App() {
   }
 
 
-  function handleUpdateUser(data) {
-    MainApi.setUserData(data)
-      .then((res) => {
-        setCurrentUser(res);
-      })
-      .catch(err => console.log(err))
-  }
+
 
 
   function handleLikeMovie(movie) {
@@ -109,11 +105,21 @@ function App() {
 
 
   function handleDeleteMovie(movie) {
-    setIsLoading(true);
     let movieId = movie.movieId || movie.id;
     let movieForDelete = savedMovies.find(movie => movie.movieId === movieId || movie.id === movieId);
 
     MainApi.deleteMovie(movieForDelete)
+      .then(setSavedMovies(savedMovies.filter(c => c.movieId !== movieId && c.id !== movieId)))
+      .catch(err => console.log(err))
+  }
+
+
+  async function handleDeleteSavedMovie(movie) {
+    setIsLoading(true);
+    let movieId = movie.movieId || movie.id;
+    let movieForDelete = savedMovies.find(movie => movie.movieId === movieId || movie.id === movieId);
+
+    await MainApi.deleteMovie(movieForDelete)
       .then(setSavedMovies(savedMovies.filter(c => c.movieId !== movieId && c.id !== movieId)))
       .catch(err => console.log(err))
       .finally(() => setIsLoading(false))
@@ -219,7 +225,7 @@ function App() {
                     setIsLoading={setIsLoading}
                     savedMovies={savedMovies}
                     handleLikeMovie={handleLikeMovie}
-                    handleDeleteMovie={handleDeleteMovie}
+                    handleDeleteMovie={handleDeleteSavedMovie}
                     component={SavedMovies}
                   />
                   :
@@ -235,7 +241,8 @@ function App() {
                     isLoggedIn={isLoggedIn}
                     currentUser={currentUser}
                     handleLogout={handleLogout}
-                    handleUpdateUser={handleUpdateUser}
+                    setCurrentUser={setCurrentUser}
+                    isSuccess={isSuccess}
                     component={Profile}
                   />
                   :

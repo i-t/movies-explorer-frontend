@@ -99,15 +99,15 @@ function SavedMovies(props) {
 
 
   useEffect(() => {
-    setIsLoading(true);
+    // setIsLoading(true);
     getShortMovies();
     setCardsToRender(savedMovies);
-    setIsLoading(false);
+    // setIsLoading(false);
   }, [savedMovies])
 
-  useEffect(() => {
-    setCardsToRender(savedMovies)
-  }, [props.savedMovies])
+  // useEffect(() => {
+  //   setCardsToRender(savedMovies)
+  // }, [savedMovies])
 
 
 
@@ -122,6 +122,7 @@ function SavedMovies(props) {
           handleShortMovieToggle={handleShortMovieToggle}
           isSearchInSaved={props.isSearchInSaved}
           handleFindMovies={handleFindMovies}
+          setSearchRequest={setSearchRequest}
           isRequired={false}
         />
         {isLoading

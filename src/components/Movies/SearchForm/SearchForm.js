@@ -10,7 +10,9 @@ function SearchForm({
   handleFindMovies,
   sets,
   shortMovieToggle,
-  handleShortMovieToggle
+  handleShortMovieToggle,
+  searchRequest,
+  setSearchRequest,
 }) {
 
   const {
@@ -20,9 +22,19 @@ function SearchForm({
   } = useForm();
 
 
+  useEffect(() => {
+    let searchValue = values.movie
+    sessionStorage.setItem('search', searchValue);
+  }, [values.movie])
+
   function handleSubmit(e) {
     e.preventDefault();
     handleFindMovies(values.movie);
+  }
+
+
+  function toggleSubmit(e) {
+    handleShortMovieToggle(values.movie)
   }
 
 
@@ -36,13 +48,16 @@ function SearchForm({
       ?
       setValues({
         ...values,
-        movie: JSON.parse(sessionStorage.getItem('search'))
+        movie: searchRequest
       })
       :
       setValues({ ...values, movie: '' })
   }, [handleFindMovies])
 
 
+  useEffect(() => {
+    setSearchRequest(values.movie)
+  }, [handleSubmit])
 
   return (
     <section className="search">
@@ -60,7 +75,9 @@ function SearchForm({
           name="movie"
           required={isRequired}
           onChange={handleChange}
-          value={values.movie}
+          value={values.movie ? values.movie : JSON.parse(sessionStorage
+            .getItem('short')) ? JSON.parse(sessionStorage
+              .getItem('short')) : 'kjk'}
         ></input>
         <button
           className="search__btn"
@@ -79,7 +96,7 @@ function SearchForm({
           type="checkbox"
           className="search__checkbox"
           checked={!!shortMovieToggle}
-          onChange={handleShortMovieToggle}
+          onChange={toggleSubmit}
         ></input>
         <label
           className="search__checkbox-style"
