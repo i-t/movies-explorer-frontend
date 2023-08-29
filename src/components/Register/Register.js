@@ -1,15 +1,28 @@
 import AuthForm from '../AuthForm/AuthForm'
 
-function Register({ auth }) {
+
+function Register({
+  setCurrentUser,
+  setIsLoading,
+  setLoggedIn,
+  isLoggedIn,
+  navigate
+}) {
+
+
   return (
     <AuthForm
       sets='register'
       title='Добро пожаловать!'
-      button='Зарегистрироваться'
+      btnText='Зарегистрироваться'
       bottomText='Уже зарегистрированы?'
       bottomTextLink='Войти'
       bottomLink='/signin'
-      auth={auth}
+      setCurrentUser={setCurrentUser}
+      setIsLoading={setIsLoading}
+      setLoggedIn={setLoggedIn}
+      isLoggedIn={isLoggedIn}
+      navigate={navigate}
     />
   )
 }

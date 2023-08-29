@@ -1,20 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 import useForm from '../../hooks/useForm.js';
-import { INPUT_ERROR } from '../../utils/constants.js';
+import * as MainApi from '../../utils/MainApi.js';
+import { INPUT_ERROR, SERVER_ERROR } from '../../utils/constants.js';
 
 import logo from '../../images/logo.svg';
+
 
 function AuthForm({
   sets,
   title,
-  button,
+  btnText,
   bottomText,
   bottomTextLink,
   bottomLink,
-  auth
+  setIsLoading,
+  setLoggedIn,
+  navigate
 }) {
+
+
+  const [errorApi, setErrorApi] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
 
   const {
     values,
@@ -25,10 +33,42 @@ function AuthForm({
   } = useForm();
 
 
-  function handleSubmit(e) {
+  function handleSignUp(e) {
     e.preventDefault();
-    auth(values.email, values.password, values.name);
+    MainApi.signUp(values.email, values.password, values.name)
+      .then((res) => {
+        if (res.email) {
+          handleSignIn(e)
+        }
+        return
+      })
+      .catch((err) => {
+        console.log(err)
+        err = 409
+          ? (setErrorMessage(SERVER_ERROR.conflict)
+            && setErrorApi(true))
+          : err = 500
+          && setErrorMessage(SERVER_ERROR.internalServer)
+          && setErrorApi(true)
+      })
   }
+
+
+  function handleSignIn(e) {
+    e.preventDefault();
+    MainApi.signIn(values.email, values.password)
+      .then((data) => {
+        if (data.token) {
+          localStorage.setItem('token', data.token);
+          setLoggedIn(true);
+          setIsLoading(false);
+          navigate('/movies', { replace: true })
+        }
+      })
+      .catch(err => console.log(err))
+  }
+
+
 
   return (
     <main className="auth-form">
@@ -37,7 +77,13 @@ function AuthForm({
         to="/"
       ><img src={logo} alt="Логотип" /></Link>
       <h1 className="auth-form__title">{title}</h1>
-      <form className="auth-form__form" onSubmit={handleSubmit}>
+      <form
+        className="auth-form__form"
+        onSubmit={
+          sets === 'register'
+            ? handleSignUp
+            : handleSignIn
+        }>
         {sets === 'register' &&
           <div className="auth-form__var-input">
             <label
@@ -88,17 +134,19 @@ function AuthForm({
           value={values.password}
           onChange={handleChange}
         ></input>
-        {errors[inputName] ?
-          <p className="auth-form__error-text">
-            {INPUT_ERROR[inputName]}</p>
-          : ""
-        }
 
+        <p className="auth-form__error-text">
+          {errors[inputName]
+            ? INPUT_ERROR[inputName]
+            : errorApi
+              ? errorMessage
+              : ""}
+        </p>
         <button
           className="auth-form__button"
           type="submit"
           disabled={!isValid ? true : false}
-        >{button}</button>
+        >{btnText}</button>
       </form>
       <p className="auth-form__bottom-text">
         {bottomText}

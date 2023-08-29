@@ -16,6 +16,13 @@ export const SEARCH_ERROR = {
   noRequest: 'Нужно ввести ключевое слово'
 }
 
+export const SERVER_ERROR = {
+  badRequest: 'Некорректный запрос на сервер',
+  unAuth: 'Пользователь не авторизован',
+  conflict: 'Пользователь с таким email уже зарегистрирован',
+  internalServer: 'Непредвиденная ошибка на сервере'
+}
+
 export const SCREEN_DESCTOPE = {
   width: 1280,
   length: 12,

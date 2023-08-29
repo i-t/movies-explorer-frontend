@@ -1,16 +1,20 @@
 import { useState, useContext, useEffect } from "react";
 import { Link } from 'react-router-dom';
+
 import Header from '../Header/Header.js';
 import { CurrentUserContext } from '../../context/CurrentUserContext.js'
 import * as MainApi from '../../utils/MainApi.js'
 
 import useForm from '../../hooks/useForm.js';
+import { SERVER_ERROR } from "../../utils/constants.js";
+
 
 function Profile(props) {
 
   const [isSuccess, setIsSuccess] = useState(false);
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
-  const [isErrorMessage, setIsErrorMessage] = useState(false)
+  const [isError, setIsError] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
   const { name, email } = useContext(CurrentUserContext);
   const {
     values,
@@ -30,15 +34,32 @@ function Profile(props) {
         props.setCurrentUser(res);
         setIsSuccess(true)
         setIsButtonDisabled(true)
-        setIsErrorMessage(false)
+        setIsError(false)
       })
       .catch(err => {
         setIsSuccess(false)
-        if (err === 409) {
-          setIsErrorMessage(true)
-          setIsButtonDisabled(true)
-        }
+        setIsError(true)
+        setIsButtonDisabled(true)
+        err = 409
+          ? setErrorMessage(SERVER_ERROR.conflict)
+          : err === 500
+          && setErrorMessage(SERVER_ERROR.internalServer)
       })
+  }
+
+
+  function handleLogout() {
+    localStorage.clear('token');
+    sessionStorage.clear('search');
+    sessionStorage.clear('found');
+    sessionStorage.clear('toggle');
+    sessionStorage.clear('cards');
+    sessionStorage.clear('saved');
+    sessionStorage.clear('saved-short');
+    sessionStorage.clear('short');
+    sessionStorage.clear('moviesList');
+    props.setLoggedIn(false);
+    props.setCurrentUser({});
   }
 
 
@@ -55,7 +76,7 @@ function Profile(props) {
     ) {
       setIsButtonDisabled(true);
     } else {
-      setIsErrorMessage(false);
+      setIsError(false);
       setIsButtonDisabled(false);
       setIsSuccess(false);
     }
@@ -122,13 +143,16 @@ function Profile(props) {
           }
         >
           {
-            isSuccess && (values.name === name && values.email === email) ? 'Данные успешно обновлены' : isErrorMessage && 'Пользователь с таким email уже зарегистрирован' || 'Редактировать'
+            isSuccess && (values.name === name && values.email === email)
+              ? 'Данные успешно обновлены'
+              : isError
+              && errorMessage || 'Редактировать'
           }
         </button>
         <Link
           className="profile__logout"
           to="/"
-          onClick={props.handleLogout}
+          onClick={handleLogout}
         >
           Выйти из аккаунта
         </Link>

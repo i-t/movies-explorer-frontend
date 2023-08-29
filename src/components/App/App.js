@@ -32,7 +32,7 @@ function App() {
     const jwt = localStorage.getItem('token');
     if (jwt) {
       MainApi.checkToken(jwt)
-        .then((res) => {
+        .then(() => {
           setLoggedIn(true);
           setIsLoading(false);
         })
@@ -43,47 +43,6 @@ function App() {
         .finally(() => setIsLoading(false))
     }
   }, [isLoggedIn])
-
-
-  function handleSignUp(email, password, name) {
-    MainApi.signUp(email, password, name)
-      .then((res) => {
-        if (res.email) {
-          handleSignIn(email, password)
-        }
-        return
-      })
-      .catch(err => console.log(err))
-  }
-
-
-  function handleSignIn(email, password) {
-    MainApi.signIn(email, password)
-      .then((data) => {
-        if (data.token) {
-          localStorage.setItem('token', data.token);
-          setLoggedIn(true);
-          setIsLoading(false);
-          navigate('/movies', { replace: true })
-        }
-      })
-      .catch(err => console.log(err))
-  }
-
-
-  function handleLogout() {
-    localStorage.clear('token');
-    sessionStorage.clear('search');
-    sessionStorage.clear('found');
-    sessionStorage.clear('toggle');
-    sessionStorage.clear('cards');
-    sessionStorage.clear('saved');
-    sessionStorage.clear('saved-short');
-    sessionStorage.clear('short');
-    sessionStorage.clear('moviesList');
-    setLoggedIn(false);
-    setCurrentUser({});
-  }
 
 
   function handleLikeMovie(movie) {
@@ -150,8 +109,11 @@ function App() {
               element={!isLoggedIn
                 ?
                 <Register
-                  auth={handleSignUp}
+                  setCurrentUser={setCurrentUser}
+                  setIsLoading={setIsLoading}
+                  setLoggedIn={setLoggedIn}
                   isLoggedIn={isLoggedIn}
+                  navigate={navigate}
                 />
                 :
                 <Navigate to='/movies' />
@@ -163,8 +125,11 @@ function App() {
                 !isLoggedIn
                   ?
                   <Login
-                    auth={handleSignIn}
+                    setCurrentUser={setCurrentUser}
+                    setIsLoading={setIsLoading}
+                    setLoggedIn={setLoggedIn}
                     isLoggedIn={isLoggedIn}
+                    navigate={navigate}
                   />
                   :
                   <Navigate to='/movies' />
@@ -232,10 +197,10 @@ function App() {
                 isLoggedIn
                   ?
                   <ProtectedRoute
-                    isLoggedIn={isLoggedIn}
-                    currentUser={currentUser}
-                    handleLogout={handleLogout}
                     setCurrentUser={setCurrentUser}
+                    currentUser={currentUser}
+                    setLoggedIn={setLoggedIn}
+                    isLoggedIn={isLoggedIn}
                     component={Profile}
                   />
                   :
