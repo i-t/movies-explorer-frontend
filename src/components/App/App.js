@@ -24,9 +24,6 @@ function App() {
   const [isLoggedIn, setLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState({});
   const [savedMovies, setSavedMovies] = useState([]);
-  const [isSuccess, setIsSucces] = useState(false);
-
-
   const [isSearchInSaved, setIsSearchInSaved] = useState(false);
 
 
@@ -87,9 +84,6 @@ function App() {
     setLoggedIn(false);
     setCurrentUser({});
   }
-
-
-
 
 
   function handleLikeMovie(movie) {
@@ -242,7 +236,6 @@ function App() {
                     currentUser={currentUser}
                     handleLogout={handleLogout}
                     setCurrentUser={setCurrentUser}
-                    isSuccess={isSuccess}
                     component={Profile}
                   />
                   :

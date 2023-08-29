@@ -22,11 +22,6 @@ function SearchForm({
   } = useForm();
 
 
-  useEffect(() => {
-    let searchValue = values.movie
-    sessionStorage.setItem('search', searchValue);
-  }, [values.movie])
-
   function handleSubmit(e) {
     e.preventDefault();
     handleFindMovies(values.movie);
@@ -51,13 +46,15 @@ function SearchForm({
         movie: searchRequest
       })
       :
-      setValues({ ...values, movie: '' })
-  }, [handleFindMovies])
+      setValues({ ...values, movie: searchRequest })
+  }, [])
 
 
   useEffect(() => {
     setSearchRequest(values.movie)
   }, [handleSubmit])
+
+
 
   return (
     <section className="search">
@@ -75,9 +72,7 @@ function SearchForm({
           name="movie"
           required={isRequired}
           onChange={handleChange}
-          value={values.movie ? values.movie : JSON.parse(sessionStorage
-            .getItem('short')) ? JSON.parse(sessionStorage
-              .getItem('short')) : 'kjk'}
+          value={values.movie}
         ></input>
         <button
           className="search__btn"
