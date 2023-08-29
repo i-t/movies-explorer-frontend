@@ -94,20 +94,17 @@ function SavedMovies(props) {
 
     setSavedMovies(JSON.parse(sessionStorage.getItem('saved')));
     setShortFilms(JSON.parse(sessionStorage.getItem('saved-short')));
+
     props.setIsSearchInSaved(true);
   }, [])
 
 
   useEffect(() => {
-    // setIsLoading(true);
+
     getShortMovies();
     setCardsToRender(savedMovies);
-    // setIsLoading(false);
-  }, [savedMovies])
 
-  // useEffect(() => {
-  //   setCardsToRender(savedMovies)
-  // }, [savedMovies])
+  }, [savedMovies])
 
 
 

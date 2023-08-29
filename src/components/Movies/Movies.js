@@ -72,20 +72,17 @@ function Movies(props) {
 
 
   function handleShortMovieToggle() {
-    checkScreenWidth();
-    // console.log(searchRequest)
 
     sessionStorage.setItem('toggle',
       JSON.stringify(!shortMovieToggle));
 
-    setShortMovieToggle(!shortMovieToggle)
-    handleFindMovies()
+    setShortMovieToggle(!shortMovieToggle);
+    checkScreenWidth();
+    handleFindMovies();
   }
 
 
   function handleFindMovies() {
-    // console.log('===СТАРТ===')
-    // console.log(`ищем "${sessionStorage.getItem('search')}"`)
 
     let search = searchRequest
     sessionStorage.setItem('search', search);
@@ -97,7 +94,6 @@ function Movies(props) {
     let short = [];
 
     if (!moviesList.length) {
-      // console.log(`!moviesList.length = ${!moviesList.length}, обращаемся к API`)
 
       MovieApi.getMovies()
         .then(list => {
@@ -112,7 +108,6 @@ function Movies(props) {
           setIsLoad(false)
         })
     } else {
-      // console.log(`!moviesList.length = ${!moviesList.length}, проходимся по массиву`)
 
       moviesList.forEach(movie => {
         (movie.nameRU.toLowerCase().includes(searchRequest)
@@ -121,19 +116,14 @@ function Movies(props) {
             && (movie.duration <= SHORT_MOVIE_DURATION
               && short.push(movie)));
       })
-      // console.log(`found.length > 0 = ${found.length > 0},`)
-      // console.log(`а found.length < moviesList = ${found.length < moviesList.length}`)
-      // console.log(`все вместе ${found.length > 0 && found.length < moviesList.length}`)
 
       if (found.length > 0 && found.length < moviesList.length) {
-        // console.log(`найдено фильмов ${found.length}`)
 
         let cards = found.slice(0, screenWidth.length);
 
         setFoundMovies(found);
         setMovieCards(cards);
         setShortFilms(short);
-
 
         sessionStorage.setItem('found', JSON.stringify(found));
         sessionStorage.setItem('cards', JSON.stringify(cards));
@@ -142,14 +132,14 @@ function Movies(props) {
         setIsLoad(true);
 
       } else {
+
         found.length > 0
           ? setNoResultMessage(SEARCH_ERROR.noRequest)
           : setNoResultMessage(SEARCH_ERROR.notFound)
+
         setIsLoad(false);
       }
     }
-
-    // console.log('===DONE===')
     setIsLoading(false);
   }
 
@@ -159,7 +149,7 @@ function Movies(props) {
     handleFindMovies();
 
     let search = sessionStorage.getItem('search')
-    // console.log(`ЗАГРУЖАЕМ ИЗ LS ${search}`)
+
     setSearchRequest(search);
     setFoundMovies(
       JSON.parse(sessionStorage.getItem('found'))
