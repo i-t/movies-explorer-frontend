@@ -18,7 +18,7 @@ export const SEARCH_ERROR = {
 
 export const SERVER_ERROR = {
   badRequest: 'Некорректный запрос на сервер',
-  unAuth: 'Пользователь не авторизован',
+  unAuth: 'Неверный логин или пароль',
   conflict: 'Пользователь с таким email уже зарегистрирован',
   internalServer: 'Непредвиденная ошибка на сервере'
 }

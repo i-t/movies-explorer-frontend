@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import useForm from '../../hooks/useForm.js';
@@ -44,12 +44,13 @@ function AuthForm({
       })
       .catch((err) => {
         console.log(err)
-        err = 409
-          ? (setErrorMessage(SERVER_ERROR.conflict)
-            && setErrorApi(true))
-          : err = 500
-          && setErrorMessage(SERVER_ERROR.internalServer)
-          && setErrorApi(true)
+        setErrorApi(true);
+        if (err === 409) {
+          setErrorMessage(SERVER_ERROR.conflict);
+        }
+        if (err === 500) {
+          setErrorMessage(SERVER_ERROR.internalServer)
+        }
       })
   }
 
@@ -65,7 +66,16 @@ function AuthForm({
           navigate('/movies', { replace: true })
         }
       })
-      .catch(err => console.log(err))
+      .catch((err) => {
+        console.log(err)
+        setErrorApi(true);
+        if (err === 401) {
+          setErrorMessage(SERVER_ERROR.unAuth);
+        }
+        if (err === 500) {
+          setErrorMessage(SERVER_ERROR.internalServer)
+        }
+      })
   }
 
 
