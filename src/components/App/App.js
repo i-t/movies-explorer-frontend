@@ -17,6 +17,7 @@ import * as MainApi from '../../utils/MainApi.js';
 import ProtectedRoute from '../ProtectedRoute/ProtectedRoute.js';
 import { CurrentUserContext } from '../../context/CurrentUserContext.js';
 
+
 function App() {
 
   const navigate = useNavigate();
@@ -25,33 +26,6 @@ function App() {
   const [currentUser, setCurrentUser] = useState({});
   const [savedMovies, setSavedMovies] = useState([]);
   const [isSearchInSaved, setIsSearchInSaved] = useState(false);
-
-
-  // useEffect(()=>{
-  //   setTimeout(()=> {
-  //     setIsLoading(false)
-  //   },1000)
-  // })
-
-
-  // useEffect(() => {
-  // setIsLoading(true);
-  //   const jwt = localStorage.getItem('token');
-  //   if (jwt) {
-  //     MainApi.checkToken(jwt)
-  //       .then(() => {
-  //         setLoggedIn(true);
-  //         setIsLoading(false);
-  //       })
-  //       .catch((err) => {
-  //         console.log(err)
-  //         setLoggedIn(false)
-  //       })
-  //       .finally(() => {
-  //           setIsLoading(false)
-  //       })
-  //   }
-  // }, [isLoggedIn])
 
 
   function handleLikeMovie(movie) {
@@ -97,12 +71,16 @@ function App() {
         setCurrentUser(user);
         setSavedMovies(saved);
         sessionStorage.setItem('saved', JSON.stringify(saved))
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
         const jwt = localStorage.getItem('token');
         if (jwt) {
           MainApi.checkToken(jwt)
             .then(() => {
               setLoggedIn(true);
-              setIsLoading(false);
             })
             .catch((err) => {
               console.log(err)
@@ -112,12 +90,7 @@ function App() {
               setIsLoading(false)
             })
         }
-
       })
-      .catch((err) => {
-        console.log(err);
-      })
-      .finally(() => setIsLoading(false))
   }, [isLoggedIn])
 
 
