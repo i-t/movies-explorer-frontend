@@ -71,21 +71,20 @@ function Movies(props) {
   }
 
 
-  function handleShortMovieToggle() {
+  function handleShortMovieToggle(search) {
 
     sessionStorage.setItem('toggle',
       JSON.stringify(!shortMovieToggle));
 
     setShortMovieToggle(!shortMovieToggle);
     checkScreenWidth();
-    handleFindMovies();
+    handleFindMovies(search);
   }
 
 
-  function handleFindMovies() {
+  async function handleFindMovies(search) {
 
-    let search = searchRequest
-    sessionStorage.setItem('search', search);
+    sessionStorage.setItem('search', JSON.stringify(search));
 
     setIsLoading(true);
     setIsLoad(false);
@@ -95,77 +94,78 @@ function Movies(props) {
 
     if (!moviesList.length) {
 
-      MovieApi.getMovies()
+      await MovieApi.getMovies()
         .then(list => {
+
           setMoviesList(list);
           setServerError(false)
           sessionStorage.setItem('moviesList', JSON.stringify(list))
+
         })
         .catch(err => {
           console.log(err)
+
           setServerError(true)
           setIsLoading(false)
           setIsLoad(false)
         })
+    }
+
+    moviesList.forEach(movie => {
+      (movie.nameRU.toLowerCase().includes(search)
+        || movie.nameEN.toLowerCase().includes(search))
+        && (found.push(movie)
+          && (movie.duration <= SHORT_MOVIE_DURATION
+            && short.push(movie)));
+    })
+
+    if (found.length > 0 && found.length < moviesList.length) {
+
+      let cards = found.slice(0, screenWidth.length);
+
+      setFoundMovies(found);
+      setMovieCards(cards);
+      setShortFilms(short);
+
+      sessionStorage.setItem('search', JSON.stringify(search));
+      sessionStorage.setItem('found', JSON.stringify(found));
+      sessionStorage.setItem('cards', JSON.stringify(cards));
+      sessionStorage.setItem('short', JSON.stringify(short));
+
+      setIsLoad(true);
+
     } else {
 
-      moviesList.forEach(movie => {
-        (movie.nameRU.toLowerCase().includes(searchRequest)
-          || movie.nameEN.toLowerCase().includes(searchRequest))
-          && (found.push(movie)
-            && (movie.duration <= SHORT_MOVIE_DURATION
-              && short.push(movie)));
-      })
+      found.length > 0
+        ? setNoResultMessage(SEARCH_ERROR.noRequest)
+        : setNoResultMessage(SEARCH_ERROR.notFound)
 
-      if (found.length > 0 && found.length < moviesList.length) {
-
-        let cards = found.slice(0, screenWidth.length);
-
-        setFoundMovies(found);
-        setMovieCards(cards);
-        setShortFilms(short);
-
-        sessionStorage.setItem('found', JSON.stringify(found));
-        sessionStorage.setItem('cards', JSON.stringify(cards));
-        sessionStorage.setItem('short', JSON.stringify(short));
-
-        setIsLoad(true);
-
-      } else {
-
-        found.length > 0
-          ? setNoResultMessage(SEARCH_ERROR.noRequest)
-          : setNoResultMessage(SEARCH_ERROR.notFound)
-
-        setIsLoad(false);
-      }
+      setIsLoad(false);
     }
+
     setIsLoading(false);
   }
 
 
   useEffect(() => {
     checkScreenWidth();
-    handleFindMovies();
+    setShortMovieToggle(JSON.parse(sessionStorage
+      .getItem('toggle')));
+    handleFindMovies(JSON.parse(sessionStorage
+      .getItem('search')));
+    setFoundMovies(JSON.parse(sessionStorage
+      .getItem('found')));
+    shortMovieToggle
+      ? setMovieCards(JSON.parse(sessionStorage
+        .getItem('short')))
+      : setMovieCards(JSON.parse(sessionStorage
+        .getItem('cards')))
 
-    let search = sessionStorage.getItem('search')
-
-    setSearchRequest(search);
-    setFoundMovies(
-      JSON.parse(sessionStorage.getItem('found'))
-    );
-    setShortMovieToggle(
-      JSON.parse(sessionStorage.getItem('toggle'))
-    );
-    setMovieCards(
-      JSON.parse(sessionStorage.getItem('short'))
-    )
-    setMovieCards(
-      JSON.parse(sessionStorage.getItem('cards'))
-    )
-
-    movieCards.length > 0 && setIsLoading(false) && setIsLoad(true)
-  }, [])
+    if (movieCards == null) {
+      setIsLoading(false)
+      setNoResultMessage(SEARCH_ERROR.default)
+    }
+  }, [moviesList])
 
 
 

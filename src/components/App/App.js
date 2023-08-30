@@ -27,22 +27,31 @@ function App() {
   const [isSearchInSaved, setIsSearchInSaved] = useState(false);
 
 
-  useEffect(() => {
-    setIsLoading(true);
-    const jwt = localStorage.getItem('token');
-    if (jwt) {
-      MainApi.checkToken(jwt)
-        .then(() => {
-          setLoggedIn(true);
-          setIsLoading(false);
-        })
-        .catch((err) => {
-          console.log(err)
-          setLoggedIn(false)
-        })
-        .finally(() => setIsLoading(false))
-    }
-  }, [isLoggedIn])
+  // useEffect(()=>{
+  //   setTimeout(()=> {
+  //     setIsLoading(false)
+  //   },1000)
+  // })
+
+
+  // useEffect(() => {
+  // setIsLoading(true);
+  //   const jwt = localStorage.getItem('token');
+  //   if (jwt) {
+  //     MainApi.checkToken(jwt)
+  //       .then(() => {
+  //         setLoggedIn(true);
+  //         setIsLoading(false);
+  //       })
+  //       .catch((err) => {
+  //         console.log(err)
+  //         setLoggedIn(false)
+  //       })
+  //       .finally(() => {
+  //           setIsLoading(false)
+  //       })
+  //   }
+  // }, [isLoggedIn])
 
 
   function handleLikeMovie(movie) {
@@ -88,11 +97,27 @@ function App() {
         setCurrentUser(user);
         setSavedMovies(saved);
         sessionStorage.setItem('saved', JSON.stringify(saved))
+        const jwt = localStorage.getItem('token');
+        if (jwt) {
+          MainApi.checkToken(jwt)
+            .then(() => {
+              setLoggedIn(true);
+              setIsLoading(false);
+            })
+            .catch((err) => {
+              console.log(err)
+              setLoggedIn(false)
+            })
+            .finally(() => {
+              setIsLoading(false)
+            })
+        }
+
       })
       .catch((err) => {
         console.log(err);
       })
-      .finally(() => setIsLoading(false))
+    // .finally(() => setIsLoading(false))
   }, [isLoggedIn])
 
 

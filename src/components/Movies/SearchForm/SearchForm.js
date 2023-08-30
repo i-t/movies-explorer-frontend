@@ -11,8 +11,6 @@ function SearchForm({
   sets,
   shortMovieToggle,
   handleShortMovieToggle,
-  searchRequest,
-  setSearchRequest,
 }) {
 
   const {
@@ -43,16 +41,11 @@ function SearchForm({
       ?
       setValues({
         ...values,
-        movie: searchRequest
+        movie: JSON.parse(sessionStorage.getItem('search'))
       })
       :
-      setValues({ ...values, movie: searchRequest })
-  }, [])
-
-
-  useEffect(() => {
-    setSearchRequest(values.movie)
-  }, [handleSubmit])
+      setValues({ ...values, movie: '' })
+  }, [handleFindMovies])
 
 
 
