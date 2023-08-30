@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import useForm from '../../hooks/useForm.js';
@@ -31,6 +31,11 @@ function AuthForm({
     isValid,
     handleChange,
   } = useForm();
+
+
+  useEffect(() => {
+    setErrorApi(false)
+  }, [values])
 
 
   function handleSignUp(e) {
