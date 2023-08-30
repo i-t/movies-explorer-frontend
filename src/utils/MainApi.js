@@ -15,6 +15,15 @@ const getJson = (res) => {
   }
   return Promise.reject(res.status)
 }
+// if (!res.ok) {
+//   return res.json().then((data) => {
+//     return Promise.reject({
+//       status: res.status,
+//       message: data.message
+//     })
+//   })
+// }
+// return res.json()
 
 
 export const signIn = (email, password) => {

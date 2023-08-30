@@ -42,36 +42,45 @@ function App() {
 
   function handleDeleteMovie(movie) {
     let movieId = movie.movieId || movie.id;
-    let movieForDelete = savedMovies.find(movie => movie.movieId === movieId || movie.id === movieId);
-
+    let movieForDelete = savedMovies.find(
+      movie => movie.movieId === movieId || movie.id === movieId
+    );
     MainApi.deleteMovie(movieForDelete)
-      .then(setSavedMovies(savedMovies.filter(c => c.movieId !== movieId && c.id !== movieId)))
+      .then(setSavedMovies(savedMovies.filter(
+        c => c.movieId !== movieId && c.id !== movieId
+      )))
       .catch(err => console.log(err))
   }
 
 
-  async function handleDeleteSavedMovie(movie) {
-    setIsLoading(true);
-    let movieId = movie.movieId || movie.id;
-    let movieForDelete = savedMovies.find(movie => movie.movieId === movieId || movie.id === movieId);
+  function getSavedMoviesFromApi() {
+    MainApi.getSavedMovies()
+      .then((saved) => {
+        setSavedMovies(saved);
+        sessionStorage.setItem('saved', JSON.stringify(saved))
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+  }
 
-    await MainApi.deleteMovie(movieForDelete)
-      .then(setSavedMovies(savedMovies.filter(c => c.movieId !== movieId && c.id !== movieId)))
-      .catch(err => console.log(err))
-      .finally(() => setIsLoading(false))
+
+  function getCurrentUserFromApi() {
+    MainApi.getCurrentUser()
+      .then((user) => {
+        setCurrentUser(user);
+      })
+      .catch((err) => {
+        console.log(err)
+      })
   }
 
 
   useEffect(() => {
     Promise.all([
-      MainApi.getCurrentUser(),
-      MainApi.getSavedMovies()
+      getCurrentUserFromApi(),
+      getSavedMoviesFromApi()
     ])
-      .then(([user, saved]) => {
-        setCurrentUser(user);
-        setSavedMovies(saved);
-        sessionStorage.setItem('saved', JSON.stringify(saved))
-      })
       .catch((err) => {
         console.log(err);
       })
@@ -181,7 +190,6 @@ function App() {
                     setIsLoading={setIsLoading}
                     savedMovies={savedMovies}
                     handleLikeMovie={handleLikeMovie}
-                    handleDeleteMovie={handleDeleteSavedMovie}
                     component={SavedMovies}
                   />
                   :

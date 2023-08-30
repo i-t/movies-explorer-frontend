@@ -29,6 +29,7 @@ function Movies(props) {
   const [foundMovies, setFoundMovies] = useState([]);
   const [shortFilms, setShortFilms] = useState([]);
   const [movieCards, setMovieCards] = useState([]);
+  const [savedMovies, setSavedMovies] = useState([]);
 
   const [searchRequest, setSearchRequest] = useState();
 
@@ -149,15 +150,23 @@ function Movies(props) {
 
   useEffect(() => {
     checkScreenWidth();
+    let saved = JSON.parse(sessionStorage
+      .getItem('saved'));
     setShortMovieToggle(JSON.parse(sessionStorage
       .getItem('toggle')));
+
     handleFindMovies(JSON.parse(sessionStorage
       .getItem('search')));
+
     setFoundMovies(JSON.parse(sessionStorage
       .getItem('found')));
+
+    setSavedMovies(saved)
+
     shortMovieToggle
       ? setMovieCards(JSON.parse(sessionStorage
         .getItem('short')))
+
       : setMovieCards(JSON.parse(sessionStorage
         .getItem('cards')))
 
@@ -191,7 +200,7 @@ function Movies(props) {
               icon={SavedCardIcon}
               isLoading={isLoading}
               movieCards={shortMovieToggle ? shortFilms : movieCards}
-              savedMovies={props.savedMovies}
+              savedMovies={savedMovies}
               handleLikeMovie={props.handleLikeMovie}
               handleDeleteMovie={props.handleDeleteMovie}
             />

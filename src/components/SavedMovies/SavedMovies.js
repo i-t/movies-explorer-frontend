@@ -19,91 +19,134 @@ function SavedMovies(props) {
   const [serverError, setServerError] = useState(false)
 
   const [savedMovies, setSavedMovies] = useState([]);
-  const [cardsToRender, setCardsToRender] = useState([]);
+  const [movieCards, setMovieCards] = useState([]);
+  const [foundMovies, setFoundMovies] = useState([]);
   const [shortFilms, setShortFilms] = useState([]);
 
   const [searchRequest, setSearchRequest] = useState('');
 
 
   useEffect(() => {
-    getShortMovies()
-  }, [])
+    setMovieCards(savedMovies)
+  }, [isLoading])
 
 
-  function getMoviesFromApi() {
+  // function getMoviesFromApi() {
+
+  //   setIsLoading(true);
+  //   setServerError(false);
+
+  //   MainApi.getSavedMovies()
+  //     .then((saved) => {
+  //       setCardsToRender(saved)
+  //       sessionStorage.setItem('saved', JSON.stringify(saved))
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //       setServerError(true)
+  //     })
+
+  //   setIsLoading(false);
+  // }
+
+
+  // function filterShortMovies() {
+  //   let short = [];
+  //   savedMovies.forEach(movie => {
+  //     movie.duration <= SHORT_MOVIE_DURATION
+  //       && short.push(movie)
+  //   })
+  //   sessionStorage.setItem('saved-short', JSON.stringify(short))
+  //   setShortFilms(short);
+  // }
+
+
+  function handleShortMovieToggle(search) {
+
+    setShortMovieToggle(!shortMovieToggle);
+    handleFindMovies(search);
+  }
+
+
+  async function handleFindMovies(search) {
+
     setIsLoading(true);
-    setServerError(false);
-    MainApi.getSavedMovies()
+
+    let found = [];
+    let short = [];
+
+    await MainApi.getSavedMovies()
       .then((saved) => {
-        setCardsToRender(saved)
+
+        setSavedMovies(saved);
+        setMovieCards(saved);
+        setServerError(false);
         sessionStorage.setItem('saved', JSON.stringify(saved))
+
       })
       .catch((err) => {
         console.log(err);
+
         setServerError(true)
+        setIsLoading(false)
       })
 
+    savedMovies.forEach(movie => {
+      (movie.nameRU.toLowerCase().includes(search)
+        || movie.nameEN.toLowerCase().includes(search))
+        && (found.push(movie)
+          && (movie.duration <= SHORT_MOVIE_DURATION
+            && short.push(movie)));
+    })
+
+    if (found.length > 0) {
+
+      let cards = found;
+
+      setFoundMovies(found);
+      setMovieCards(cards);
+      setShortFilms(short);
+    }
     setIsLoading(false);
   }
 
-  function getShortMovies() {
-    let short = [];
-    savedMovies.forEach(movie => {
-      movie.duration <= SHORT_MOVIE_DURATION
-        && short.push(movie)
-    })
-    sessionStorage.setItem('saved-short', JSON.stringify(short))
-    setShortFilms(short);
-  }
 
-  function handleShortMovieToggle() {
-    (setShortMovieToggle(!shortMovieToggle));
+  async function handleDeleteSavedMovie(movie) {
+    console.log(movie)
+    try {
+      let movieId = movie.movieId || movie.id;
 
-    if (shortMovieToggle) {
-      setCardsToRender(savedMovies)
-    } else {
-      setCardsToRender(shortFilms)
+      let movieForDelete = savedMovies.find(
+        movie => movie.movieId === movieId
+      );
+      await MainApi.deleteMovie(movieForDelete)
+      let newSaved = savedMovies.filter(
+        c => c._id !== movie._id
+      )
+      console.log(newSaved)
+      setSavedMovies(newSaved)
+      sessionStorage.setItem('saved', JSON.stringify(newSaved))
     }
-  }
-
-
-  function handleFindMovies(search) {
-    let found = [];
-    let short = [];
-    if (search) {
-      cardsToRender.forEach(movie => {
-
-        (movie.nameRU.toLowerCase().includes(search)
-          || movie.nameEN.toLowerCase().includes(search))
-          && (found.push(movie)
-            && (movie.duration <= SHORT_MOVIE_DURATION
-              && short.push(movie)));
-      })
-      setSearchRequest(search)
-      setCardsToRender(found);
-      setShortFilms(short);
-    } else {
-      setCardsToRender(savedMovies)
+    catch (err) {
+      console.log(err)
     }
-    return
   }
 
 
   useEffect(() => {
-    getMoviesFromApi();
 
+    handleFindMovies(JSON.parse(sessionStorage.getItem('saved')))
     setSavedMovies(JSON.parse(sessionStorage.getItem('saved')));
     setShortFilms(JSON.parse(sessionStorage.getItem('saved-short')));
+    setMovieCards(JSON.parse(sessionStorage.getItem('saved')))
 
     props.setIsSearchInSaved(true);
   }, [])
 
 
   useEffect(() => {
-
-    getShortMovies();
-    setCardsToRender(savedMovies);
-
+    console.log('обновляем лайки')
+    setMovieCards(savedMovies);
   }, [savedMovies])
 
 
@@ -122,27 +165,25 @@ function SavedMovies(props) {
           setSearchRequest={setSearchRequest}
           isRequired={false}
         />
-        {isLoading
-          ? <Preloader />
-          : cardsToRender.length
-            ? <MoviesCardList
-              sets="saved-movies"
-              icon={RemoveCardIcon}
-              movieCards={cardsToRender}
-              savedMovies={props.savedMovies}
-              isSearchInSaved={props.isSearchInSaved}
-              handleLikeMovie={props.handleLikeMovie}
-              handleDeleteMovie={props.handleDeleteMovie}
-            />
-            :
-            <p className="no-result">
-              {!searchRequest
-                ? 'Вы еще ничего не добавили'
-                : serverError
-                  ? `${SEARCH_ERROR.noResponce}`
-                  : `${SEARCH_ERROR.notFound}`
-              }
-            </p>
+        {movieCards.length
+          ? <MoviesCardList
+            sets="saved-movies"
+            icon={RemoveCardIcon}
+            movieCards={movieCards}
+            savedMovies={savedMovies}
+            isSearchInSaved={props.isSearchInSaved}
+            handleLikeMovie={props.handleLikeMovie}
+            handleDeleteMovie={handleDeleteSavedMovie}
+          />
+          :
+          <p className="no-result">
+            {!searchRequest
+              ? 'Вы еще ничего не добавили'
+              : serverError
+                ? `${SEARCH_ERROR.noResponce}`
+                : `${SEARCH_ERROR.notFound}`
+            }
+          </p>
         }
       </main>
       <Footer />
