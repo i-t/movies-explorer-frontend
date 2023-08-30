@@ -117,9 +117,8 @@ function App() {
       .catch((err) => {
         console.log(err);
       })
-    // .finally(() => setIsLoading(false))
+      .finally(() => setIsLoading(false))
   }, [isLoggedIn])
-
 
 
   return (
