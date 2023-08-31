@@ -1,60 +1,163 @@
+import { useState, useContext, useEffect } from "react";
 import { Link } from 'react-router-dom';
-import Header from '../Header/Header.js';
 
-function Profile({ name, isLoggedIn }) {
+import Header from '../Header/Header.js';
+import { CurrentUserContext } from '../../context/CurrentUserContext.js'
+import * as MainApi from '../../utils/MainApi.js'
+
+import useForm from '../../hooks/useForm.js';
+import { SERVER_ERROR } from "../../utils/constants.js";
+
+
+function Profile(props) {
+
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+  const [isError, setIsError] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
+  const { name, email } = useContext(CurrentUserContext);
+  const {
+    values,
+    setValues,
+    isValid,
+    handleChange
+  } = useForm();
+
+
+  function handleUpdateUser(e) {
+    e.preventDefault();
+    MainApi.setUserData({
+      name: values.name,
+      email: values.email
+    })
+      .then((res) => {
+        props.setCurrentUser(res);
+        setIsSuccess(true)
+        setIsButtonDisabled(true)
+        setIsError(false)
+      })
+      .catch(err => {
+        setIsSuccess(false)
+        setIsError(true)
+        setIsButtonDisabled(true)
+        err = 409
+          ? setErrorMessage(SERVER_ERROR.conflict)
+          : err === 500
+          && setErrorMessage(SERVER_ERROR.internalServer)
+      })
+  }
+
+
+  function handleLogout() {
+    localStorage.clear('token');
+    sessionStorage.clear('search');
+    sessionStorage.clear('found');
+    sessionStorage.clear('toggle');
+    sessionStorage.clear('cards');
+    sessionStorage.clear('saved');
+    sessionStorage.clear('saved-short');
+    sessionStorage.clear('short');
+    sessionStorage.clear('moviesList');
+    props.setLoggedIn(false);
+    props.setCurrentUser({});
+  }
+
+
+  useEffect(() => {
+    setValues({ name, email });
+  }, [name, email, setValues]);
+
+
+  useEffect(() => {
+    if ((
+      values.name === name && values.email === email
+    )
+      || !isValid
+    ) {
+      setIsButtonDisabled(true);
+    } else {
+      setIsError(false);
+      setIsButtonDisabled(false);
+      setIsSuccess(false);
+    }
+  }, [values]);
+
+
+
   return (
     <div>
-     <Header 
-      isLoggedIn={isLoggedIn}
-     />
+      <Header
+        isLoggedIn={props.isLoggedIn}
+      />
       <section className="profile">
         <h1 className="profile__greetings">
-          Привет, {name}!
+          Привет, {name && name.charAt(0).toUpperCase() + name.slice(1)}!
         </h1>
-        <form 
-          className="profile__form" 
+        <form
+          className="profile__form"
           id="profile__form"
+          onSubmit={handleUpdateUser}
         >
-          <label 
-            className="profile__label" 
+          <label
+            className="profile__label"
             for="name"
           >
             Имя
-              <input 
-                className="profile__input" 
-                id="name" 
-                name="name" 
-                type="text"
-                minLength="2"
-                maxLength="30"
-                required
-                placeholder="Егор"
+            <input
+              className="profile__input"
+              id="name"
+              name="name"
+              type="text"
+              minLength="2"
+              maxLength="30"
+              required
+              onChange={handleChange}
+              value={values.name}
             ></input>
           </label>
-          <span className="profile__stroke"></span>
-          <label 
-            className="profile__label" 
+          <span
+            className="profile__stroke"
+          ></span>
+          <label
+            className="profile__label"
             for="email"
           >
             E-mail
-            <input 
-              className="profile__input" 
-              id="email" 
-              name="email" 
+            <input
+              className="profile__input"
+              id="email"
+              name="email"
               type="email"
+              pattern="[^@\s]+@[^@\s]+\.[^@\s]+"
               required
-              placeholder="pochta@yandex.ru"
+              onChange={handleChange}
+              value={values.email}
             ></input>
           </label>
         </form>
-        <button 
+        <button
           className="profile__edit"
-          form="profile__form">
-            Редактировать
+          form="profile__form"
+          disabled={
+            isButtonDisabled
+          }
+        >
+          {
+            isSuccess && (values.name === name && values.email === email)
+              ? 'Данные успешно обновлены'
+              : isError
+              && errorMessage || 'Редактировать'
+          }
         </button>
-        <Link className="profile__logout" to="/signin">Выйти из аккаунта</Link>
+        <Link
+          className="profile__logout"
+          to="/"
+          onClick={handleLogout}
+        >
+          Выйти из аккаунта
+        </Link>
       </section>
-     </div>
+    </div>
   )
 }
 

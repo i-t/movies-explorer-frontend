@@ -1,8 +1,21 @@
 @import url(../../utils/root.css);
 @import url(./Promo/Promo.css);
 @import url(./NavTab/NavTab.css);
-@import url(../../utils/section.css);
 @import url(./AboutProject/AboutProject.css);
 @import url(./Techs/Techs.css);
 @import url(./AboutMe/AboutMe.css);
 @import url(./Portfolio/Portfolio.css);
+
+.section-title {
+  padding: 110px 0 23px;
+  font-size: 22px;
+  font-weight: 400;
+  border-bottom: 1px solid #dadada;
+}
+
+@media screen and (max-width: 640px) {
+  .section-title {
+    font-size: 18px;
+    padding-bottom: 28px;
+  }
+}

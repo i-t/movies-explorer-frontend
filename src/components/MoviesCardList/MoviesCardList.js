@@ -1,29 +1,22 @@
 import MoviesCard from '../MoviesCard/MoviesCard';
 
-function MoviesCardList({icon}) {
-
-
+function MoviesCardList(props) {
 
   return (
     <ul className="movies-list">
-      <MoviesCard 
-        icon={icon}
-      />
-      <MoviesCard 
-        icon={icon}
-      />
-      <MoviesCard 
-        icon={icon}
-      />
-      <MoviesCard 
-        icon={icon}
-      />
-      <MoviesCard 
-        icon={icon}
-      />
-      <MoviesCard 
-        icon={icon}
-      />
+      {props.movieCards.map(card => {
+        return (
+          <MoviesCard
+            sets={props.sets}
+            icon={props.icon}
+            card={card}
+            key={card.id || card.movieId}
+            savedMovies={props.savedMovies}
+            handleLikeMovie={props.handleLikeMovie}
+            handleDeleteMovie={props.handleDeleteMovie}
+          />
+        )
+      })}
     </ul>
   )
 }

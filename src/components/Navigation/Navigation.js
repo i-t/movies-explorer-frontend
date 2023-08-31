@@ -1,9 +1,9 @@
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import xIcon from '../../images/nav__x-btn.svg'
 
 
-
 function Navigation({ openMenu, handleToggleMenu }) {
+
   return (
     <div className={`nav ${openMenu ? "nav_active" : ""}`}>
       <button className="nav__close-btn" onClick={handleToggleMenu}>
@@ -12,37 +12,48 @@ function Navigation({ openMenu, handleToggleMenu }) {
       <nav className="nav__items">
         <ul className="nav__list">
           <li>
-            <Link 
-              className="nav__link"
+            <NavLink
+              end
+              activeStyle={{ 'border-bottom': '2px solid #FFF' }}
+              className={({ isActive }) => (isActive
+                ? "nav__link nav__link_active"
+                : "nav__link")}
               to="/">
-                Главная
-              </Link>
-            </li>
+              Главная
+            </NavLink>
+          </li>
           <li>
-            <Link 
-              className="nav__link nav__link_active"
+            <NavLink
+              end
+              activeStyle={{ 'border-bottom': '2px solid #FFF' }}
+              className={({ isActive }) => (isActive
+                ? "nav__link nav__link_active"
+                : "nav__link")}
               to="/movies">
-                Фильмы
-              </Link>
-            </li>
+              Фильмы
+            </NavLink>
+          </li>
           <li>
-            <Link 
-              className="nav__link"
+            <NavLink
+              end
+              activeStyle={{ 'border-bottom': '2px solid #FFF' }}
+              className={({ isActive }) => (isActive
+                ? "nav__link nav__link_active"
+                : "nav__link")}
               to="/saved-movies">
-                Сохранённые фильмы
-            </Link>
+              Сохранённые фильмы
+            </NavLink>
           </li>
         </ul>
 
       </nav>
-      <Link 
-          className="nav__account-btn"
-          to="/profile"
-        >
-          Аккаунт
-        </Link>
+      <Link
+        className="nav__account-btn"
+        to="/profile"
+      >
+        Аккаунт
+      </Link>
     </div>
-    
   )
 }
 
