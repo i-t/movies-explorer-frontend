@@ -3,6 +3,7 @@ import React, { useEffect } from 'react';
 import useForm from '../../../hooks/useForm.js';
 import searchButton from '../../../images/search__btn.svg'
 
+
 function SearchForm({
   isRequired,
   isSearchInSaved,
@@ -11,7 +12,9 @@ function SearchForm({
   sets,
   shortMovieToggle,
   handleShortMovieToggle,
+  searchRequest
 }) {
+
 
   const {
     values,

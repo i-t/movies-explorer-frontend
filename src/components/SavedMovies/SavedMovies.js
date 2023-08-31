@@ -31,23 +31,23 @@ function SavedMovies(props) {
   }, [isLoading])
 
 
-  // function getMoviesFromApi() {
+  function getMoviesFromApi() {
 
-  //   setIsLoading(true);
-  //   setServerError(false);
+    setIsLoading(true);
+    setServerError(false);
 
-  //   MainApi.getSavedMovies()
-  //     .then((saved) => {
-  //       setCardsToRender(saved)
-  //       sessionStorage.setItem('saved', JSON.stringify(saved))
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //       setServerError(true)
-  //     })
+    MainApi.getSavedMovies()
+      .then((saved) => {
+        setSavedMovies(saved)
+        sessionStorage.setItem('saved', JSON.stringify(saved))
+      })
+      .catch((err) => {
+        console.log(err);
+        setServerError(true)
+      })
 
-  //   setIsLoading(false);
-  // }
+    setIsLoading(false);
+  }
 
 
   // function filterShortMovies() {
@@ -62,7 +62,6 @@ function SavedMovies(props) {
 
 
   function handleShortMovieToggle(search) {
-
     setShortMovieToggle(!shortMovieToggle);
     handleFindMovies(search);
   }
@@ -75,38 +74,23 @@ function SavedMovies(props) {
     let found = [];
     let short = [];
 
-    await MainApi.getSavedMovies()
-      .then((saved) => {
-
-        setSavedMovies(saved);
-        setMovieCards(saved);
-        setServerError(false);
-        sessionStorage.setItem('saved', JSON.stringify(saved))
-
-      })
-      .catch((err) => {
-        console.log(err);
-
-        setServerError(true)
-        setIsLoading(false)
-      })
-
     savedMovies.forEach(movie => {
-      (movie.nameRU.toLowerCase().includes(search)
-        || movie.nameEN.toLowerCase().includes(search))
-        && (found.push(movie)
-          && (movie.duration <= SHORT_MOVIE_DURATION
-            && short.push(movie)));
+      if (movie.nameRU.toLowerCase().includes(search)
+        || movie.nameEN.toLowerCase().includes(search)) {
+        return found.push(movie)
+      }
     })
 
-    if (found.length > 0) {
+    short = found.filter((movie) => {
+      return movie.duration <= SHORT_MOVIE_DURATION
+    })
+    console.log(short)
 
-      let cards = found;
+    setMovieCards(found)
 
-      setFoundMovies(found);
-      setMovieCards(cards);
-      setShortFilms(short);
-    }
+    setFoundMovies(found);
+    setShortFilms(short);
+
     setIsLoading(false);
   }
 
@@ -134,20 +118,31 @@ function SavedMovies(props) {
 
 
   useEffect(() => {
+    console.log(`переключили на ${shortMovieToggle}`)
+    shortMovieToggle
+      ? setMovieCards(shortFilms)
+      : setMovieCards(foundMovies)
+  }, [foundMovies])
 
+  useEffect(() => {
+
+    getMoviesFromApi();
+    // handleFindMovies();
     handleFindMovies(JSON.parse(sessionStorage.getItem('saved')))
-    setSavedMovies(JSON.parse(sessionStorage.getItem('saved')));
-    setShortFilms(JSON.parse(sessionStorage.getItem('saved-short')));
-    setMovieCards(JSON.parse(sessionStorage.getItem('saved')))
+    setSavedMovies(JSON.parse(sessionStorage.getItem('saved')))
+    // setShortFilms(JSON.parse(sessionStorage.getItem('saved-short')));
+    // setMovieCards(JSON.parse(sessionStorage.getItem('saved')))
 
     props.setIsSearchInSaved(true);
   }, [])
 
 
   useEffect(() => {
-    console.log('обновляем лайки')
-    setMovieCards(savedMovies);
+    console.log('обновление')
+    setMovieCards(savedMovies)
   }, [savedMovies])
+
+
 
 
 

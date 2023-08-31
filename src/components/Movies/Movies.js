@@ -189,8 +189,9 @@ function Movies(props) {
           shortMovieToggle={shortMovieToggle}
           handleShortMovieToggle={handleShortMovieToggle}
           handleFindMovies={handleFindMovies}
-          searchRequest={searchRequest}
           setSearchRequest={setSearchRequest}
+          searchRequest={searchRequest}
+          isSearchInSaved={false}
         />
         {isLoading
           ? <Preloader movies={true} />
