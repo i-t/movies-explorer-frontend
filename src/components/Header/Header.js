@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 
 import logo from '../../images/logo.svg';
 import menu from '../../images/header__burger-icon.svg'
@@ -44,18 +44,24 @@ function Header({ isLoggedIn }) {
       ) : (
         <div className="header__is-logged-in">
           <div className='header__nav'>
-            <Link
-              className='header__nav-link header__nav-link_active'
+            <NavLink
+              end
+              className={({ isActive }) => (isActive
+                ? "header__nav-link header__nav-link_active"
+                : "header__nav-link")}
               to="/movies"
             >
               Фильмы
-            </Link>
-            <Link
-              className='header__nav-link'
+            </NavLink>
+            <NavLink
+              end
+              className={({ isActive }) => (isActive
+                ? "header__nav-link header__nav-link_active"
+                : "header__nav-link")}
               to="/saved-movies"
             >
               Сохранённые фильмы
-            </Link>
+            </NavLink>
           </div>
           <Link
             className="header__account-btn"
